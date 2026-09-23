@@ -852,8 +852,8 @@ document.addEventListener("click", ev => { const g = ev.target.closest("[data-go
 $("#themeBtn").addEventListener("click", () => { const r = document.documentElement, next = r.dataset.theme === "light" ? "dark" : "light"; r.dataset.theme = next; try{ localStorage.setItem("ecd-theme", next); }catch(e){} });
 new MutationObserver(() => render()).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(render, 150); });
-$("#disclaimer").textContent = D.disclaimer + " Historical figures are {{COMPANY_POSS}} reported data; everything at division level is simulated or assumed.";
-$("#foot").innerHTML = `{{DIVISION}} is fictional. Reported history: {{LEGAL}} {{FILINGS}}.<br>All figures come from {{MODEL_FILE}} via Dash_Export; the dashboard performs no financial logic beyond summing exported records. Exported ${esc(D.generated_utc)}.`;
+$("#disclaimer").textContent = D.disclaimer + " Historical figures are {{COMPANY_POSS}} reported data; everything at division level is simulated or assumed. Created By Lynxishi";
+$("#foot").innerHTML = `{{DIVISION}} is fictional. Reported history: {{LEGAL}} {{FILINGS}}.<br>All figures come from {{MODEL_FILE}} via Dash_Export; the dashboard performs no financial logic beyond summing exported records. Created By:Lynxishi Exported ${esc(D.generated_utc)}.`;
 try { const t = localStorage.getItem("ecd-theme"); if (t && !document.documentElement.dataset.theme) document.documentElement.dataset.theme = t; } catch(e){}
 try { const s = localStorage.getItem("ecd-scenario"); if (s && D.scenarios[s]) state.scenario = s; } catch(e){}
 const hp = (location.hash||"").slice(1);
