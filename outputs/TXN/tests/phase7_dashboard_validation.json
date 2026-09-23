@@ -1,0 +1,397 @@
+{
+  "run_utc": "2026-09-23T01:06:32+00:00",
+  "data_sha256": "5a67fd87b10e0d9a186a2b53699064c1a2fd274b0e6fd658657aff3fc5642408",
+  "compared": 38,
+  "failed": 0,
+  "total_checks": 67,
+  "scenarios": [
+    "Downside",
+    "Base",
+    "Upside"
+  ],
+  "results": [
+    {
+      "check": "Downside/overview: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/overview: revenue_fy",
+      "excel": 1001.50631123964,
+      "dashboard_raw": 1001.5063112396417,
+      "displayed": "$1,001.5m",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/overview: gross_profit_fy",
+      "excel": 537.852901618904,
+      "dashboard_raw": 537.8529016189044,
+      "displayed": "$537.9m",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/overview: operating_profit_fy",
+      "excel": 314.452901618904,
+      "dashboard_raw": 314.4529016189042,
+      "displayed": "$314.5m",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/overview: fcf_fy",
+      "excel": 311.86494589642,
+      "dashboard_raw": 311.8649458964199,
+      "displayed": "$311.9m",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/overview: ytd_op_variance",
+      "excel": 3.76219051150923,
+      "dashboard_raw": 3.7621905115093455,
+      "displayed": "+$3.8m",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/overview: ytd_actual_op",
+      "excel": 180.60373331857,
+      "dashboard_raw": 180.60373331857022,
+      "displayed": "$180.6m",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/overview: budget_revenue_fy",
+      "excel": 1145.51173441897,
+      "dashboard_raw": 1145.5117344189673,
+      "displayed": "$1,145.5m",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/operations: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/variance: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/variance: ytd_actual_revenue",
+      "excel": 478.459228687156,
+      "dashboard_raw": 478.4592286871569,
+      "displayed": "$478.5m",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/scenarios: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/scenarios: net_income_fy",
+      "excel": 264.14043735988,
+      "dashboard_raw": 264.1404373598795,
+      "displayed": "$264.1m",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/capital: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside/validation: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Downside: in-page validation table",
+      "displayed": "30 / 30 match Excel",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: revenue_fy",
+      "excel": 1145.51173441897,
+      "dashboard_raw": 1145.5117344189673,
+      "displayed": "$1,145.5m",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: revenue_fy vs workbook cell (direct)",
+      "excel": 1145.51173441897,
+      "dashboard_raw": 1145.5117344189673,
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: gross_profit_fy",
+      "excel": 663.944787154569,
+      "dashboard_raw": 663.9447871545694,
+      "displayed": "$663.9m",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: gross_profit_fy vs workbook cell (direct)",
+      "excel": 663.944787154569,
+      "dashboard_raw": 663.9447871545694,
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: operating_profit_fy",
+      "excel": 434.944787154569,
+      "dashboard_raw": 434.9447871545692,
+      "displayed": "$434.9m",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: operating_profit_fy vs workbook cell (direct)",
+      "excel": 434.944787154569,
+      "dashboard_raw": 434.9447871545692,
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: fcf_fy",
+      "excel": 379.284921858853,
+      "dashboard_raw": 379.2849218588534,
+      "displayed": "$379.3m",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: fcf_fy vs workbook cell (direct)",
+      "excel": 379.284921858853,
+      "dashboard_raw": 379.2849218588534,
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: ytd_op_variance",
+      "excel": 3.76219051150923,
+      "dashboard_raw": 3.7621905115093455,
+      "displayed": "+$3.8m",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: ytd_op_variance vs workbook cell (direct)",
+      "excel": 3.76219051150923,
+      "dashboard_raw": 3.7621905115093455,
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: ytd_actual_op",
+      "excel": 180.60373331857,
+      "dashboard_raw": 180.60373331857022,
+      "displayed": "$180.6m",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: ytd_actual_op vs workbook cell (direct)",
+      "excel": 180.60373331857,
+      "dashboard_raw": 180.60373331857022,
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: budget_revenue_fy",
+      "excel": 1145.51173441897,
+      "dashboard_raw": 1145.5117344189673,
+      "displayed": "$1,145.5m",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/overview: budget_revenue_fy vs workbook cell (direct)",
+      "excel": 1145.51173441897,
+      "dashboard_raw": 1145.5117344189673,
+      "status": "PASS"
+    },
+    {
+      "check": "Base/operations: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/variance: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/variance: ytd_actual_revenue",
+      "excel": 478.459228687156,
+      "dashboard_raw": 478.4592286871569,
+      "displayed": "$478.5m",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/variance: ytd_actual_revenue vs workbook cell (direct)",
+      "excel": 478.459228687156,
+      "dashboard_raw": 478.4592286871569,
+      "status": "PASS"
+    },
+    {
+      "check": "Base/scenarios: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/scenarios: net_income_fy",
+      "excel": 378.401964824475,
+      "dashboard_raw": 378.40196482447533,
+      "displayed": "$378.4m",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/scenarios: net_income_fy vs workbook cell (direct)",
+      "excel": 378.401964824475,
+      "dashboard_raw": 378.40196482447533,
+      "status": "PASS"
+    },
+    {
+      "check": "Base/capital: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/capital: capex_npv_base",
+      "excel": 60.4404177101178,
+      "dashboard_raw": 60.44041771011777,
+      "displayed": "$60.4m",
+      "status": "PASS"
+    },
+    {
+      "check": "Base/capital: capex_npv_base vs workbook cell (direct)",
+      "excel": 60.4404177101178,
+      "dashboard_raw": 60.44041771011777,
+      "status": "PASS"
+    },
+    {
+      "check": "Base/validation: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Base: in-page validation table",
+      "displayed": "30 / 30 match Excel",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/overview: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/overview: revenue_fy",
+      "excel": 1259.55338561935,
+      "dashboard_raw": 1259.5533856193501,
+      "displayed": "$1,259.6m",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/overview: gross_profit_fy",
+      "excel": 766.261105446625,
+      "dashboard_raw": 766.2611054466252,
+      "displayed": "$766.3m",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/overview: operating_profit_fy",
+      "excel": 531.661105446625,
+      "dashboard_raw": 531.6611054466251,
+      "displayed": "$531.7m",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/overview: fcf_fy",
+      "excel": 427.910472406935,
+      "dashboard_raw": 427.91047240693473,
+      "displayed": "$427.9m",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/overview: ytd_op_variance",
+      "excel": 3.76219051150923,
+      "dashboard_raw": 3.7621905115093455,
+      "displayed": "+$3.8m",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/overview: ytd_actual_op",
+      "excel": 180.60373331857,
+      "dashboard_raw": 180.60373331857022,
+      "displayed": "$180.6m",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/overview: budget_revenue_fy",
+      "excel": 1145.51173441897,
+      "dashboard_raw": 1145.5117344189673,
+      "displayed": "$1,145.5m",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/operations: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/variance: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/variance: ytd_actual_revenue",
+      "excel": 478.459228687156,
+      "dashboard_raw": 478.4592286871569,
+      "displayed": "$478.5m",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/scenarios: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/scenarios: net_income_fy",
+      "excel": 467.86177279303,
+      "dashboard_raw": 467.86177279303,
+      "displayed": "$467.9m",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/capital: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside/validation: page renders",
+      "status": "PASS"
+    },
+    {
+      "check": "Upside: in-page validation table",
+      "displayed": "30 / 30 match Excel",
+      "status": "PASS"
+    },
+    {
+      "check": "Every control total is displayed somewhere in every scenario",
+      "missing": [],
+      "status": "PASS"
+    },
+    {
+      "check": "400px width/overview: no horizontal page scroll",
+      "scroll_width": 400,
+      "status": "PASS"
+    },
+    {
+      "check": "400px width/operations: no horizontal page scroll",
+      "scroll_width": 400,
+      "status": "PASS"
+    },
+    {
+      "check": "400px width/variance: no horizontal page scroll",
+      "scroll_width": 400,
+      "status": "PASS"
+    },
+    {
+      "check": "400px width/scenarios: no horizontal page scroll",
+      "scroll_width": 400,
+      "status": "PASS"
+    },
+    {
+      "check": "400px width/capital: no horizontal page scroll",
+      "scroll_width": 400,
+      "status": "PASS"
+    },
+    {
+      "check": "400px width/validation: no horizontal page scroll",
+      "scroll_width": 400,
+      "status": "PASS"
+    },
+    {
+      "check": "No JavaScript errors",
+      "errors": [],
+      "status": "PASS"
+    }
+  ]
+}

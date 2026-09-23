@@ -1,0 +1,818 @@
+<title>Embedded Control Console</title>
+<meta name="description" content="FY2027 FP&A console for a fictional Microchip-style Embedded Control Division: forecast, operations, budget vs actual, scenarios and a capital decision.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* ---------- tokens: dark-first console; explicit light choice honored ---------- */
+:root{
+  color-scheme: dark;
+  --bg:#0b0e13; --panel:#11161d; --panel-2:#161c25; --inset:#0e1218;
+  --line:#222a35; --line-2:#2c3542; --grid:#1d242e; --axis:#39424f;
+  --ink:#e7ecf2; --ink-2:#a8b3c1; --muted:#6f7b8a;
+  --accent:#5fc9f0; --accent-ink:#06222e; --accent-soft:rgba(95,201,240,.12);
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;          /* products: MCU, Analog, FPGA */
+  --sc-down:#e66767; --sc-base:#a8b3c1; --sc-up:#3987e5; /* scenarios */
+  --budget:#7c8796;
+  --good:#0ca30c; --good-ink:#35c435; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b; --crit-ink:#ff7a7a;
+  --heat-0:#132235; --heat-1:#184f95; --heat-2:#256abf; --heat-3:#5598e7; --heat-4:#9ec5f4;
+  --shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 10px 30px -18px rgba(0,0,0,.6);
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+}
+:root[data-theme="light"]{
+  color-scheme: light;
+  --bg:#eef1f4; --panel:#ffffff; --panel-2:#f5f7f9; --inset:#f3f5f8;
+  --line:#dde2e8; --line-2:#cdd4dc; --grid:#e8ebef; --axis:#c3cad3;
+  --ink:#0d1117; --ink-2:#4a5563; --muted:#7a8594;
+  --accent:#0a7aa6; --accent-ink:#ffffff; --accent-soft:rgba(10,122,166,.09);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --sc-down:#e34948; --sc-base:#52514e; --sc-up:#2a78d6;
+  --budget:#8a94a3;
+  --good-ink:#006300; --crit-ink:#b42323;
+  --heat-0:#e8f0fa; --heat-1:#b7d3f6; --heat-2:#86b6ef; --heat-3:#3987e5; --heat-4:#184f95;
+  --shadow:0 1px 2px rgba(13,17,23,.05), 0 8px 24px -16px rgba(13,17,23,.25);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--bg)}
+body{color:var(--ink);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1360px;margin:0 auto;padding-inline:clamp(16px,3vw,32px);padding-block:0 48px}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ---------- header ---------- */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:saturate(1.2) blur(10px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1360px;margin:0 auto;padding-inline:clamp(16px,3vw,32px);padding-block:12px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 280px}
+.die{width:34px;height:34px;flex:none;border-radius:6px;background:
+  linear-gradient(var(--line-2) 1px,transparent 1px) 0 0/8.5px 8.5px,
+  linear-gradient(90deg,var(--line-2) 1px,transparent 1px) 0 0/8.5px 8.5px,var(--panel-2);border:1px solid var(--line-2);position:relative}
+.die::after{content:"";position:absolute;inset:9px;border-radius:2px;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.brand h1{margin:0;font:600 17px/1.15 var(--cond);letter-spacing:.01em;text-wrap:balance}
+.brand .pn{font:500 11px/1.3 var(--mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.seg{display:inline-flex;padding:3px;border:1px solid var(--line-2);border-radius:9px;background:var(--inset)}
+.seg button{appearance:none;border:0;background:transparent;color:var(--ink-2);font:600 12px/1 var(--cond);letter-spacing:.04em;
+  text-transform:uppercase;padding:8px 12px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.seg button .sw{width:8px;height:8px;border-radius:50%}
+.seg button[aria-pressed="true"]{background:var(--panel-2);color:var(--ink);box-shadow:0 0 0 1px var(--line-2)}
+.seg button:hover{color:var(--ink)}
+.chip{display:inline-flex;align-items:center;gap:6px;font:600 11px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;
+  padding:6px 9px;border-radius:999px;border:1px solid var(--line-2);color:var(--ink-2);white-space:nowrap}
+.chip .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.pass{color:var(--good-ink);border-color:color-mix(in srgb,var(--good) 45%,transparent);background:color-mix(in srgb,var(--good) 10%,transparent)}
+.chip.fail{color:var(--crit-ink);border-color:color-mix(in srgb,var(--crit) 50%,transparent);background:color-mix(in srgb,var(--crit) 10%,transparent)}
+.chip.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent);background:color-mix(in srgb,var(--warn) 10%,transparent)}
+:root[data-theme="light"] .chip.warn{color:#8a5a00}
+.iconbtn{appearance:none;border:1px solid var(--line-2);background:var(--inset);color:var(--ink-2);border-radius:8px;height:32px;padding:0 10px;
+  font:600 11px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+.iconbtn:hover{color:var(--ink)}
+nav.tabs{max-width:1360px;margin:0 auto;padding-inline:clamp(16px,3vw,32px);display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:none;text-decoration:none;color:var(--muted);font:600 12.5px/1 var(--cond);letter-spacing:.05em;text-transform:uppercase;
+  padding:11px 12px 12px;border-bottom:2px solid transparent;display:flex;gap:8px;align-items:baseline}
+nav.tabs a .k{font:500 10px/1 var(--mono);color:var(--muted);opacity:.8}
+nav.tabs a:hover{color:var(--ink)}
+nav.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+.sim{max-width:1360px;margin:0 auto;padding-inline:clamp(16px,3vw,32px)}
+.sim p{margin:14px 0 0;font:500 11.5px/1.45 var(--mono);color:var(--muted);display:flex;gap:10px;align-items:flex-start}
+.sim p b{color:var(--warn);font-weight:600;white-space:nowrap}
+:root[data-theme="light"] .sim p b{color:#8a5a00}
+
+/* ---------- page ---------- */
+.page{display:grid;gap:18px;margin-top:18px}
+.page-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 24px}
+.page-head h2{margin:0;font:600 26px/1.1 var(--cond);letter-spacing:.005em;text-wrap:balance}
+.page-head p{margin:6px 0 0;color:var(--ink-2);max-width:72ch}
+.eyebrow{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.grid{display:grid;gap:14px}
+.g-kpi{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.g-2{grid-template-columns:repeat(auto-fit,minmax(min(520px,100%),1fr))}
+.g-3{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
+.g-21{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+@media (max-width:980px){.g-21{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 16px 14px;box-shadow:var(--shadow);min-width:0}
+.panel h3{margin:0;font:600 14px/1.25 var(--cond);letter-spacing:.03em;text-transform:uppercase}
+.panel .sub{margin:3px 0 0;color:var(--muted);font-size:12.5px}
+.phead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;align-items:flex-start;margin-bottom:10px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font:500 11.5px/1.2 var(--sans);color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:14px;height:0;border-top:2px solid currentColor}
+.legend i.dash{border-top-style:dashed}
+.legend i.box{width:10px;height:10px;border:0;border-radius:2px;background:currentColor}
+.src{margin-top:10px;font:500 10.5px/1.3 var(--mono);color:var(--muted);letter-spacing:.03em}
+
+/* KPI tile */
+.kpi{position:relative;display:grid;gap:4px;padding:14px 14px 10px}
+.kpi .lab{font:600 11px/1.2 var(--cond);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
+.kpi .val{font:500 26px/1.1 var(--mono);letter-spacing:-.01em}
+.kpi .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font:500 11.5px/1.3 var(--mono);color:var(--muted)}
+.delta{font:600 11.5px/1 var(--mono);padding:3px 6px;border-radius:5px}
+.delta.up{color:var(--good-ink);background:color-mix(in srgb,var(--good) 12%,transparent)}
+.delta.down{color:var(--crit-ink);background:color-mix(in srgb,var(--crit) 12%,transparent)}
+.delta.flat{color:var(--ink-2);background:var(--panel-2)}
+.spark{display:block;width:100%;height:34px;margin-top:4px}
+
+/* charts */
+.chart{position:relative;width:100%}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart text{font-family:var(--mono);font-size:10.5px;fill:var(--muted)}
+.chart .lbl{font-family:var(--sans);font-size:11.5px;font-weight:600}
+.tip{position:fixed;z-index:50;pointer-events:none;min-width:150px;max-width:260px;background:var(--panel-2);border:1px solid var(--line-2);
+  border-radius:8px;padding:8px 10px;box-shadow:0 12px 30px -12px rgba(0,0,0,.5);font:500 12px/1.45 var(--sans);color:var(--ink)}
+.tip .t{font:600 11px/1.2 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.tip .r{display:flex;justify-content:space-between;gap:14px}
+.tip .r span:first-child{display:flex;gap:6px;align-items:center;color:var(--ink-2)}
+.tip .r b{font:500 12px/1.45 var(--mono)}
+.tip .sw{width:8px;height:8px;border-radius:2px;display:inline-block}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;margin-inline:-4px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font:600 10.5px/1.2 var(--cond);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line-2)}
+td.num,th.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+tr.total td{font-weight:600;border-top:1px solid var(--line-2)}
+tbody tr:hover td{background:var(--accent-soft)}
+td.act,th.act{background:var(--accent-soft)}
+.pdot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:8px;vertical-align:0}
+.bar-cell{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.minibar{height:6px;border-radius:3px;background:var(--line-2);position:relative;width:80px;flex:none}
+.minibar i{position:absolute;top:0;bottom:0;border-radius:3px}
+
+/* heat map */
+.heat{display:grid;gap:4px;grid-template-columns:minmax(92px,auto) repeat(12,minmax(44px,1fr));min-width:680px}
+.heat .hd{font:500 10.5px/1 var(--mono);color:var(--muted);text-align:center;padding:4px 0}
+.heat .rl{font:600 12px/1.2 var(--cond);letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.cell{border-radius:5px;padding:7px 4px 6px;text-align:center;border:1px solid transparent;cursor:default;min-height:48px;display:grid;align-content:center;gap:2px}
+.cell .v{font:500 12px/1 var(--mono)}
+.cell .b{font:600 9px/1 var(--mono);letter-spacing:.08em}
+.cell.hot{border-color:var(--warn)}
+.cell.short{border-color:var(--crit);border-width:2px}
+
+/* callouts */
+.callout{display:grid;gap:10px;grid-template-columns:auto 1fr;align-items:start;padding:16px;border-radius:12px;border:1px solid var(--line-2);background:
+  linear-gradient(135deg,var(--accent-soft),transparent 60%),var(--panel)}
+.callout .badge{font:700 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:8px 10px;border-radius:6px;background:var(--accent);color:var(--accent-ink);white-space:nowrap}
+.callout h3{margin:0;font:600 18px/1.25 var(--cond);text-wrap:balance}
+.callout p{margin:4px 0 0;color:var(--ink-2);max-width:95ch}
+@media (max-width:560px){.callout{grid-template-columns:1fr}}
+.spec{display:grid;grid-template-columns:1fr auto;gap:0;font-size:13px}
+.spec div{padding:7px 0;border-bottom:1px dashed var(--line)}
+.spec div:nth-child(even){text-align:right;font-family:var(--mono)}
+.crit-grid td .chip{font-size:10.5px}
+.foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font:500 11px/1.5 var(--mono)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:640px){.kpi .val{font-size:22px}.page-head h2{font-size:22px}}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <div class="die" aria-hidden="true"></div>
+      <div style="min-width:0">
+        <div class="pn">ECD-FY27 &middot; Plan of record &middot; Actuals through Aug-26</div>
+        <h1>Embedded Control Division &mdash; FP&amp;A Console</h1>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Scenario" id="scenarioSeg">
+        <button type="button" data-s="Downside" id="sc-down"><span class="sw" style="background:var(--sc-down)"></span>Downside</button>
+        <button type="button" data-s="Base" id="sc-base"><span class="sw" style="background:var(--sc-base)"></span>Base</button>
+        <button type="button" data-s="Upside" id="sc-up"><span class="sw" style="background:var(--sc-up)"></span>Upside</button>
+      </div>
+      <span class="chip" id="checksChip"><span class="dot"></span><span></span></span>
+      <button type="button" class="iconbtn" id="themeBtn" aria-label="Switch light or dark theme">Theme</button>
+    </div>
+  </div>
+  <nav class="tabs" aria-label="Pages">
+    <a href="#overview" data-p="overview"><span class="k">01</span>Executive overview</a>
+    <a href="#operations" data-p="operations"><span class="k">02</span>Semiconductor operations</a>
+    <a href="#variance" data-p="variance"><span class="k">03</span>Budget vs actual</a>
+    <a href="#scenarios" data-p="scenarios"><span class="k">04</span>Scenario planning</a>
+    <a href="#capital" data-p="capital"><span class="k">05</span>Capital allocation</a>
+    <a href="#validation" data-p="validation"><span class="k">QA</span>Validation</a>
+  </nav>
+</header>
+<div class="sim"><p><b>SIMULATED</b><span id="disclaimer"></span></p></div>
+
+<main class="wrap">
+  <!-- 01 OVERVIEW -->
+  <section class="page" id="p-overview" data-page="overview">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow" id="ovEyebrow"></div>
+        <h2>FY2027 at a glance</h2>
+        <p>Full-year forecast for the active scenario, the locked budget, and simulated actuals for April&ndash;August 2026.</p>
+      </div>
+    </div>
+    <div class="grid g-kpi" id="ovKpis"></div>
+    <div class="grid g-21">
+      <div class="panel">
+        <div class="phead"><div><h3>Monthly revenue</h3><p class="sub">Outlook = actuals Apr&ndash;Aug, then scenario forecast. $m.</p></div>
+          <div class="legend" id="ovRevLegend"></div></div>
+        <div class="chart" id="ovRev"></div>
+      </div>
+      <div class="panel">
+        <div class="phead"><div><h3>Operating profit by month</h3><p class="sub">Bars = outlook; ticks = budget. $m.</p></div></div>
+        <div class="chart" id="ovOp"></div>
+        <div class="legend" style="margin-top:8px"><span style="color:var(--accent)"><i class="box"></i>Actual</span>
+          <span style="color:color-mix(in srgb,var(--accent) 45%,var(--panel))"><i class="box"></i>Forecast</span>
+          <span style="color:var(--budget)"><i></i>Budget</span></div>
+      </div>
+    </div>
+    <div class="grid g-21">
+      <div class="panel">
+        <div class="phead"><div><h3>Product profitability</h3><p class="sub">FY2027, active scenario.</p></div></div>
+        <div class="tbl-wrap"><table id="ovProd"></table></div>
+      </div>
+      <div class="panel" id="ovCapital"></div>
+    </div>
+  </section>
+
+  <!-- 02 OPERATIONS -->
+  <section class="page" id="p-operations" data-page="operations" hidden>
+    <div class="page-head"><div><div class="eyebrow">Final test &middot; three product lines</div><h2>Semiconductor operations</h2>
+      <p>Yield, loading and unit cost on the internal final-test floor, and where demand runs into capacity.</p></div></div>
+    <div class="grid g-3" id="opsCards"></div>
+    <div class="panel">
+      <div class="phead"><div><h3>Demand &amp; capacity risk map</h3>
+        <p class="sub">Each cell = customer demand &divide; good-unit capacity at full load (capacity &times; yield). Binned like test results.</p></div>
+        <div class="legend" id="heatLegend"></div></div>
+      <div class="tbl-wrap"><div class="heat" id="heat"></div></div>
+    </div>
+    <div class="grid g-2">
+      <div class="panel">
+        <div class="phead"><div><h3>Gross margin by product</h3><p class="sub">Monthly, active scenario.</p></div><div class="legend" id="gmLegend"></div></div>
+        <div class="chart" id="opsGm"></div>
+      </div>
+      <div class="panel">
+        <div class="phead"><div><h3>Demand vs good-unit capacity</h3><p class="sub">m units per month. Each product on its own scale.</p></div></div>
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px" id="opsDemand"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 VARIANCE -->
+  <section class="page" id="p-variance" data-page="variance" hidden>
+    <div class="page-head"><div><div class="eyebrow">YTD Apr&ndash;Aug 2026 &middot; independent of scenario</div><h2>Budget vs actual</h2>
+      <p>Every component is calculated separately in Excel and must add up to the total; the reconciliation flags are shown below.</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="recoChips"></div></div>
+    <div class="grid g-kpi" id="varKpis"></div>
+    <div class="grid g-21">
+      <div class="panel">
+        <div class="phead"><div><h3>Operating-profit waterfall</h3><p class="sub">Budget to actual, YTD. Positive = favorable. $m.</p></div>
+          <div class="legend"><span style="color:var(--good)"><i class="box"></i>Favorable</span><span style="color:var(--crit)"><i class="box"></i>Unfavorable</span><span style="color:var(--budget)"><i class="box"></i>Total</span></div></div>
+        <div class="chart" id="waterfall"></div>
+      </div>
+      <div class="panel">
+        <div class="phead"><div><h3>Required variances</h3><p class="sub">Division, YTD, favorable = positive.</p></div></div>
+        <div class="tbl-wrap"><table id="reqVar"></table></div>
+      </div>
+    </div>
+    <div class="grid g-2">
+      <div class="panel">
+        <div class="phead"><div><h3>Revenue variance: price, volume, mix</h3><p class="sub">$m by product line. Volume and mix per product are an allocation; their sum is unique.</p></div></div>
+        <div class="tbl-wrap"><table id="pvm"></table></div>
+      </div>
+      <div class="panel">
+        <div class="phead"><div><h3>Monthly variance</h3><p class="sub">Actual &minus; budget, $m.</p></div>
+          <div class="legend"><span style="color:var(--s1)"><i class="box"></i>Revenue</span><span style="color:var(--s2)"><i class="box"></i>Operating profit</span></div></div>
+        <div class="chart" id="varMonthly"></div>
+      </div>
+    </div>
+    <div class="grid g-2">
+      <div class="panel"><div class="phead"><div><h3>YTD P&amp;L</h3><p class="sub">Budget, actual and variance, $m.</p></div></div>
+        <div class="tbl-wrap"><table id="varPnl"></table></div></div>
+      <div class="panel"><div class="phead"><div><h3>Operating KPIs</h3><p class="sub">YTD budget vs actual by product.</p></div></div>
+        <div class="tbl-wrap"><table id="varKpiTbl"></table></div></div>
+    </div>
+  </section>
+
+  <!-- 04 SCENARIOS -->
+  <section class="page" id="p-scenarios" data-page="scenarios" hidden>
+    <div class="page-head"><div><div class="eyebrow">One selector &middot; three cases</div><h2>Scenario planning</h2>
+      <p>Downside, Base and Upside all run through the same Excel model; the highlighted column is the active scenario.</p></div></div>
+    <div class="grid g-21">
+      <div class="panel">
+        <div class="phead"><div><h3>FY2027 outcomes</h3><p class="sub">$m. Bars share one scale per metric.</p></div>
+          <div class="legend"><span style="color:var(--sc-down)"><i class="box"></i>Downside</span><span style="color:var(--sc-base)"><i class="box"></i>Base</span><span style="color:var(--sc-up)"><i class="box"></i>Upside</span></div></div>
+        <div class="chart" id="scBars"></div>
+      </div>
+      <div class="panel">
+        <div class="phead"><div><h3>Scenario drivers</h3><p class="sub">FY2027 vs FY2026 base year.</p></div></div>
+        <div class="tbl-wrap"><table id="scDrivers"></table></div>
+      </div>
+    </div>
+    <div class="grid g-2">
+      <div class="panel">
+        <div class="phead"><div><h3>Monthly revenue by scenario</h3><p class="sub">Forecast engine output, with the locked budget. $m.</p></div>
+          <div class="legend"><span style="color:var(--sc-down)"><i></i>Downside</span><span style="color:var(--sc-base)"><i></i>Base</span><span style="color:var(--sc-up)"><i></i>Upside</span><span style="color:var(--budget)"><i class="dash"></i>Budget</span></div></div>
+        <div class="chart" id="scLines"></div>
+      </div>
+      <div class="panel">
+        <div class="phead"><div><h3>Margins and cash</h3><p class="sub">FY2027 by scenario.</p></div></div>
+        <div class="tbl-wrap"><table id="scTable"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 CAPITAL -->
+  <section class="page" id="p-capital" data-page="capital" hidden>
+    <div class="page-head"><div><div class="eyebrow">Hypothetical proposal &middot; FPGA automated final-test platform</div><h2>Capital allocation</h2>
+      <p>Incremental with-vs-without-project cash flows over six years, judged against explicit criteria in every scenario.</p></div></div>
+    <div id="capReco"></div>
+    <div class="grid g-kpi" id="capKpis"></div>
+    <div class="grid g-21">
+      <div class="panel">
+        <div class="phead"><div><h3>Cumulative incremental free cash flow</h3><p class="sub">$m, Year 0 = investment at end of FY2027. Payback where the line crosses zero.</p></div>
+          <div class="legend"><span style="color:var(--sc-down)"><i></i>Downside</span><span style="color:var(--sc-base)"><i></i>Base</span><span style="color:var(--sc-up)"><i></i>Upside</span></div></div>
+        <div class="chart" id="capCum"></div>
+      </div>
+      <div class="panel">
+        <div class="phead"><div><h3>Decision criteria</h3><p class="sub">A scenario passes only if all three hold.</p></div></div>
+        <div class="tbl-wrap"><table id="capCrit" class="crit-grid"></table></div>
+      </div>
+    </div>
+    <div class="grid g-2">
+      <div class="panel">
+        <div class="phead"><div><h3>Incremental free cash flow by year</h3><p class="sub" id="capBarsSub"></p></div></div>
+        <div class="chart" id="capBars"></div>
+      </div>
+      <div class="panel">
+        <div class="phead"><div><h3>Project specification</h3><p class="sub">Hypothetical inputs (Capex tab, section A).</p></div></div>
+        <div class="spec" id="capSpec"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QA VALIDATION -->
+  <section class="page" id="p-validation" data-page="validation" hidden>
+    <div class="page-head"><div><div class="eyebrow">Dashboard totals vs Excel control totals</div><h2>Validation</h2>
+      <p>Every headline figure on this dashboard is re-computed here from the exported monthly records and compared with the control totals Excel produced for each scenario.</p></div>
+      <span class="chip" id="valChip"><span class="dot"></span><span></span></span></div>
+    <div class="panel"><div class="tbl-wrap"><table id="valTbl"></table></div>
+      <div class="src" id="valSrc"></div></div>
+    <div class="grid g-2">
+      <div class="panel"><div class="phead"><div><h3>Automated browser test</h3><p class="sub">Displayed values read from the rendered page and compared with Excel.</p></div></div>
+        <div id="browserTest"></div></div>
+      <div class="panel"><div class="phead"><div><h3>Value classification</h3><p class="sub">Every number in the model is one of four types.</p></div></div>
+        <div class="spec" id="classSpec"></div></div>
+    </div>
+  </section>
+
+  <div class="foot" id="foot"></div>
+</main>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+window.__DATA__ = /*__DATA__*/null;
+window.__BROWSER_TEST__ = /*__BROWSER_TEST__*/null;
+</script>
+<script>
+(() => {
+"use strict";
+const D = window.__DATA__;
+const PRODUCTS = [["MCU","Mixed-signal MCUs","--s1"],["ANALOG","Analog & power","--s2"],["FPGA","FPGAs","--s3"]];
+const SC = [["Downside","--sc-down"],["Base","--sc-base"],["Upside","--sc-up"]];
+const MONTHS = D.scenarios.Base.monthly.map(m => new Date(m.month + "T00:00:00"));
+const MLAB = MONTHS.map(d => d.toLocaleString("en-US",{month:"short"}));
+const state = {scenario:"Base", page:"overview"};
+const $ = s => document.querySelector(s);
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const sum = a => a.reduce((x,y)=>x+(y||0),0);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- formatting ---------- */
+const f1 = v => v.toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});
+const money = v => (v<0?"−$":"$") + f1(Math.abs(v)) + "m";
+const smoney = v => (v>=0?"+$":"−$") + f1(Math.abs(v)) + "m";
+const pct = (v,d=1) => (v*100).toFixed(d) + "%";
+const spct = (v,d=1) => (v>=0?"+":"−") + Math.abs(v*100).toFixed(d) + "%";
+const pts = v => (v>=0?"+":"−") + Math.abs(v*100).toFixed(1) + " pts";
+const units = v => f1(v) + "m";
+const dollars = (v,d=2) => "$" + v.toFixed(d);
+
+/* ---------- data accessors (headline totals are computed from records) ---------- */
+const S = () => D.scenarios[state.scenario];
+const tbl = (name, key="metric_id") => Object.fromEntries(S()[name].map(x => [x[key], x]));
+const ST = D.static;
+function totals(s){
+  const m = D.scenarios[s].monthly, act = m.filter(x => x.actual_revenue !== null);
+  const rev = sum(m.map(x=>x.revenue)), gp = sum(m.map(x=>x.gross_profit)), op = sum(m.map(x=>x.operating_profit));
+  const bOpYtd = sum(m.slice(0,act.length).map(x=>x.budget_operating_profit));
+  return {revenue_fy:rev, gross_profit_fy:gp, operating_profit_fy:op, net_income_fy:sum(m.map(x=>x.net_income)),
+    fcf_fy:sum(m.map(x=>x.fcf)), budget_revenue_fy:sum(m.map(x=>x.budget_revenue)),
+    ytd_actual_revenue:sum(act.map(x=>x.actual_revenue)), ytd_actual_op:sum(act.map(x=>x.actual_operating_profit)),
+    ytd_op_variance:sum(act.map(x=>x.actual_operating_profit)) - bOpYtd, capex_npv_base:npvFromCashflows("Base"),
+    gm:gp/rev, om:op/rev, outlook_rev:sum(m.map(x=>x.outlook_revenue)), outlook_op:sum(m.map(x=>x.outlook_operating_profit)),
+    budget_op_fy:sum(m.map(x=>x.budget_operating_profit))};
+}
+function npvFromCashflows(s){
+  const r = ST.capex_inputs.find(x=>x.key==="rate").value;
+  return sum(ST.capex_cashflows.filter(x=>x.scenario===s).map(x => x.fcf / Math.pow(1+r, x.year)));
+}
+const ctl = (id, v, text) => `<span data-ctl="${id}" data-raw="${v}">${text}</span>`;
+
+/* ---------- tooltip ---------- */
+const tip = $("#tip");
+function showTip(ev, title, rows){
+  tip.innerHTML = `<div class="t">${esc(title)}</div>` + rows.map(r =>
+    `<div class="r"><span>${r.c?`<i class="sw" style="background:${r.c}"></i>`:""}${esc(r.k)}</span><b>${esc(r.v)}</b></div>`).join("");
+  tip.hidden = false;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = ev.clientX + 14, y = ev.clientY + 14;
+  if (x + w > innerWidth - 8) x = ev.clientX - w - 14;
+  if (y + h > innerHeight - 8) y = ev.clientY - h - 14;
+  tip.style.left = Math.max(8,x) + "px"; tip.style.top = Math.max(8,y) + "px";
+}
+const hideTip = () => { tip.hidden = true; };
+
+/* ---------- SVG helpers ---------- */
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs={}, parent){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if(parent) parent.appendChild(e); return e; }
+function niceTicks(lo, hi, n=4){
+  if (lo === hi) { hi = lo + 1; }
+  const span = hi - lo, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const step = [1,2,2.5,5,10].map(x=>x*mag).find(x => span/x <= n) || 10*mag;
+  const a = Math.floor(lo/step)*step, b = Math.ceil(hi/step)*step, out = [];
+  for (let v=a; v<=b+step/2; v+=step) out.push(+v.toFixed(10));
+  return out;
+}
+function frame(host, H, pad){
+  host.innerHTML = "";
+  const W = Math.max(280, host.clientWidth);
+  const svg = el("svg", {viewBox:`0 0 ${W} ${H}`, role:"img"}, host);
+  return {svg, W, H, x0:pad.l, x1:W-pad.r, y0:pad.t, y1:H-pad.b};
+}
+function yAxis(f, ticks, y, fmt){
+  ticks.forEach(t => {
+    el("line",{x1:f.x0,x2:f.x1,y1:y(t),y2:y(t),stroke:css("--grid"),"stroke-width":1},f.svg);
+    const tx = el("text",{x:f.x0-8,y:y(t)+3.5,"text-anchor":"end"},f.svg); tx.textContent = fmt(t);
+  });
+  if (ticks[0] < 0 && ticks[ticks.length-1] > 0) el("line",{x1:f.x0,x2:f.x1,y1:y(0),y2:y(0),stroke:css("--axis"),"stroke-width":1},f.svg);
+}
+function xLabels(f, labels, x, every=1){
+  labels.forEach((l,i) => { if (i % every) return; const t = el("text",{x:x(i),y:f.y1+16,"text-anchor":"middle"},f.svg); t.textContent = l; });
+}
+
+/* line chart with crosshair */
+function lineChart(host, {labels, series, fmt, H=260, yPad=0.08, tipTitle}){
+  const f = frame(host, H, {l:48, r:74, t:12, b:26});
+  const all = series.flatMap(s => s.values.filter(v => v!==null));
+  let lo = Math.min(...all), hi = Math.max(...all); const pd = (hi-lo)*yPad || 1; lo -= pd; hi += pd;
+  const ticks = niceTicks(lo, hi); lo = ticks[0]; hi = ticks[ticks.length-1];
+  const x = i => f.x0 + (f.x1-f.x0) * (labels.length===1?0.5:i/(labels.length-1));
+  const y = v => f.y1 - (v-lo)/(hi-lo) * (f.y1-f.y0);
+  yAxis(f, ticks, y, fmt); xLabels(f, labels, x, f.W < 520 ? 2 : 1);
+  series.forEach(s => {
+    const segs = []; let cur = [];
+    s.values.forEach((v,i) => { if (v===null){ if(cur.length) segs.push(cur); cur=[]; } else cur.push([x(i),y(v),i]); });
+    if (cur.length) segs.push(cur);
+    segs.forEach(seg => {
+      if (s.area){
+        const d = "M"+seg.map(p=>p[0]+","+p[1]).join("L")+`L${seg[seg.length-1][0]},${f.y1}L${seg[0][0]},${f.y1}Z`;
+        el("path",{d, fill:s.color, "fill-opacity":0.08, stroke:"none"}, f.svg);
+      }
+      el("path",{d:"M"+seg.map(p=>p[0]+","+p[1]).join("L"), fill:"none", stroke:s.color, "stroke-width":s.w||2,
+        "stroke-dasharray":s.dash||"", "stroke-linecap":"round","stroke-linejoin":"round"}, f.svg);
+      if (s.markers) seg.forEach(p => el("circle",{cx:p[0],cy:p[1],r:3.5,fill:s.color,stroke:css("--panel"),"stroke-width":2},f.svg));
+    });
+    if (s.label){
+      const li = s.values.map((v,i)=>v===null?-1:i).filter(i=>i>=0).pop();
+      const t = el("text",{x:x(li)+8,y:y(s.values[li])+4,class:"lbl",fill:s.color},f.svg);
+      t.style.fill = s.color; t.textContent = s.label;
+    }
+  });
+  // collision relief for end labels
+  const lbls = [...f.svg.querySelectorAll("text.lbl")].sort((a,b)=>+a.getAttribute("y")-+b.getAttribute("y"));
+  for (let i=1;i<lbls.length;i++){ const p=+lbls[i-1].getAttribute("y"), c=+lbls[i].getAttribute("y"); if (c-p<13) lbls[i].setAttribute("y", p+13); }
+  const cross = el("line",{y1:f.y0,y2:f.y1,stroke:css("--axis"),"stroke-width":1,opacity:0},f.svg);
+  const dots = series.map(s => el("circle",{r:4,fill:s.color,stroke:css("--panel"),"stroke-width":2,opacity:0},f.svg));
+  const hit = el("rect",{x:f.x0,y:f.y0,width:f.x1-f.x0,height:f.y1-f.y0,fill:"transparent"},f.svg);
+  hit.addEventListener("pointermove", ev => {
+    const r = f.svg.getBoundingClientRect(), px = (ev.clientX - r.left) * (f.W / r.width);
+    const i = Math.max(0, Math.min(labels.length-1, Math.round((px - f.x0) / ((f.x1-f.x0)/(labels.length-1||1)))));
+    cross.setAttribute("x1",x(i)); cross.setAttribute("x2",x(i)); cross.setAttribute("opacity",1);
+    series.forEach((s,k) => { const v = s.values[i]; if (v===null){ dots[k].setAttribute("opacity",0); return; }
+      dots[k].setAttribute("cx",x(i)); dots[k].setAttribute("cy",y(v)); dots[k].setAttribute("opacity",1); });
+    showTip(ev, tipTitle ? tipTitle(i) : labels[i], series.filter(s=>s.values[i]!==null).map(s => ({k:s.name, v:fmt(s.values[i], true), c:s.color})));
+  });
+  hit.addEventListener("pointerleave", () => { cross.setAttribute("opacity",0); dots.forEach(d=>d.setAttribute("opacity",0)); hideTip(); });
+}
+
+/* vertical bars (single or grouped), supports negatives, optional budget ticks */
+function barChart(host, {labels, groups, fmt, H=240, ticksAt, tipTitle, colorOf}){
+  const f = frame(host, H, {l:48, r:10, t:12, b:26});
+  const all = groups.flatMap(g => g.values).concat(ticksAt ? ticksAt.values : []).concat([0]);
+  let lo = Math.min(...all), hi = Math.max(...all);
+  const ticks = niceTicks(lo, hi); lo = ticks[0]; hi = ticks[ticks.length-1];
+  const y = v => f.y1 - (v-lo)/(hi-lo) * (f.y1-f.y0);
+  const n = labels.length, band = (f.x1-f.x0)/n, gw = band*0.68, bw = Math.max(3,(gw - 2*(groups.length-1))/groups.length);
+  const x = i => f.x0 + band*i + band/2;
+  yAxis(f, ticks, y, fmt); xLabels(f, labels, x, f.W < 520 ? 2 : 1);
+  el("line",{x1:f.x0,x2:f.x1,y1:y(0),y2:y(0),stroke:css("--axis"),"stroke-width":1},f.svg);
+  labels.forEach((lab,i) => {
+    groups.forEach((g,k) => {
+      const v = g.values[i]; if (v===null || v===undefined) return;
+      const bx = x(i) - gw/2 + k*(bw+2), top = Math.min(y(v), y(0)), h = Math.max(1, Math.abs(y(v)-y(0)));
+      const c = colorOf ? colorOf(g,i,v) : g.color;
+      const r = Math.min(4, bw/2, h);
+      const d = v>=0 ? `M${bx},${top+h}V${top+r}Q${bx},${top} ${bx+r},${top}H${bx+bw-r}Q${bx+bw},${top} ${bx+bw},${top+r}V${top+h}Z`
+                     : `M${bx},${top}V${top+h-r}Q${bx},${top+h} ${bx+r},${top+h}H${bx+bw-r}Q${bx+bw},${top+h} ${bx+bw},${top+h-r}V${top}Z`;
+      const p = el("path",{d},f.svg); p.style.fill = c;
+      p.addEventListener("pointermove", ev => showTip(ev, tipTitle?tipTitle(i):lab, [{k:g.name, v:fmt(v,true), c}].concat(ticksAt?[{k:ticksAt.name, v:fmt(ticksAt.values[i],true), c:css("--budget")}]:[])));
+      p.addEventListener("pointerleave", hideTip);
+    });
+    if (ticksAt) el("line",{x1:x(i)-gw/2-3,x2:x(i)+gw/2+3,y1:y(ticksAt.values[i]),y2:y(ticksAt.values[i]),stroke:css("--budget"),"stroke-width":2,"stroke-linecap":"round"},f.svg);
+  });
+}
+
+/* waterfall */
+function waterfall(host, steps){
+  const H = 300, f = frame(host, H, {l:48, r:10, t:22, b:54});
+  let run = 0; const bars = steps.map(s => {
+    if (s.kind === "start" || s.kind === "end"){ const b = {lo:0, hi:s.value, v:s.value, s}; run = s.value; return b; }
+    const b = {lo:Math.min(run, run+s.value), hi:Math.max(run, run+s.value), v:s.value, s}; run += s.value; return b;
+  });
+  const vmax = Math.max(...bars.map(b=>b.hi)), deltas = bars.filter(b=>b.s.kind==="delta");
+  let lo = Math.min(...deltas.map(b=>b.lo)); lo = Math.max(0, lo - (vmax-lo)*0.6);
+  const ticks = niceTicks(lo, vmax*1.02); const tlo = ticks[0], thi = ticks[ticks.length-1];
+  const y = v => f.y1 - (v-tlo)/(thi-tlo)*(f.y1-f.y0);
+  yAxis(f, ticks, y, v => "$"+Math.round(v));
+  if (tlo > 0){ const n0 = el("text",{x:f.x0,y:f.y0-8},f.svg); n0.textContent = `Axis starts at $${tlo}m`; }
+  const n = bars.length, band = (f.x1-f.x0)/n, bw = Math.min(46, band*0.64);
+  bars.forEach((b,i) => {
+    const cx = f.x0 + band*i + band/2, total = b.s.kind!=="delta";
+    const c = total ? css("--budget") : (b.v >= 0 ? css("--good") : css("--crit"));
+    const top = y(total ? b.hi : b.hi), bot = total ? f.y1 : y(b.lo);
+    const r = el("rect",{x:cx-bw/2,y:top,width:bw,height:Math.max(1.5,bot-top),rx:3,fill:c},f.svg);
+    if (i < n-1){ const nextTop = total ? y(b.hi) : y(b.v>=0?b.hi:b.lo); el("line",{x1:cx+bw/2,x2:cx+band-bw/2,y1:nextTop,y2:nextTop,stroke:css("--axis"),"stroke-dasharray":"2 3"},f.svg); }
+    const t = el("text",{x:cx,y:top-6,"text-anchor":"middle"},f.svg);
+    t.textContent = total ? "$"+f1(b.v) : (b.v>=0?"+":"−")+f1(Math.abs(b.v)); t.style.fill = css("--ink-2");
+    const lab = el("text",{x:cx,y:f.y1+14,"text-anchor":"middle"},f.svg);
+    const words = b.s.label.replace("operating profit","OP").split(" ");
+    const lines = []; let line = "";
+    words.forEach(w => { if ((line+" "+w).trim().length > 11){ lines.push(line.trim()); line = w; } else line += " "+w; }); lines.push(line.trim());
+    lines.slice(0,3).forEach((ln,k) => { const ts = el("tspan",{x:cx,dy:k?12:0},lab); ts.textContent = ln; });
+    r.addEventListener("pointermove", ev => showTip(ev, b.s.label, [{k: total?"Value":"Impact", v: total? money(b.v) : smoney(b.v), c}]));
+    r.addEventListener("pointerleave", hideTip);
+  });
+}
+
+/* sparkline */
+function spark(values, color, actualCount){
+  const W = 200, H = 34, lo = Math.min(...values), hi = Math.max(...values), span = (hi-lo)||1;
+  const x = i => 2 + (W-6)*i/(values.length-1), y = v => H-3 - (v-lo)/span*(H-8);
+  const pts = values.map((v,i)=>[x(i),y(v)]);
+  const d = "M"+pts.map(p=>p.join(",")).join("L");
+  const ac = actualCount ? pts.slice(0, actualCount) : [];
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+    <path d="${d}L${x(values.length-1)},${H}L${x(0)},${H}Z" fill="${color}" fill-opacity=".10"/>
+    <path d="${d}" fill="none" stroke="${color}" stroke-width="1.6" stroke-dasharray="${actualCount?"3 3":""}" vector-effect="non-scaling-stroke"/>
+    ${ac.length>1?`<path d="M${ac.map(p=>p.join(",")).join("L")}" fill="none" stroke="${color}" stroke-width="2" vector-effect="non-scaling-stroke"/>`:""}
+    <circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="2.6" fill="${color}"/></svg>`;
+}
+const deltaChip = (v, fmtFn, invert=false) => {
+  const cls = Math.abs(v) < 1e-9 ? "flat" : ((v>0) !== invert ? "up" : "down");
+  return `<span class="delta ${cls}">${fmtFn(v)}</span>`;
+};
+
+/* ================= PAGES ================= */
+function renderOverview(){
+  const s = S(), m = s.monthly, k = tbl("kpis"), t = totals(state.scenario), nAct = m.filter(x=>x.actual_revenue!==null).length;
+  $("#ovEyebrow").textContent = `${state.scenario} scenario · forecast engine: Excel model`;
+  const acc = css("--accent");
+  const tiles = [
+    {lab:"Revenue FY27", val:ctl("revenue_fy", t.revenue_fy, money(t.revenue_fy)), meta:`${deltaChip(k.revenue_growth.value, spct)} vs FY26 base year`, sp:spark(m.map(x=>x.revenue), acc)},
+    {lab:"Gross margin", val:pct(t.gm), meta:`GP ${ctl("gross_profit_fy", t.gross_profit_fy, money(t.gross_profit_fy))}`, sp:spark(m.map(x=>x.gross_margin), acc)},
+    {lab:"Operating profit", val:ctl("operating_profit_fy", t.operating_profit_fy, money(t.operating_profit_fy)), meta:`${pct(t.om)} margin`, sp:spark(m.map(x=>x.operating_profit), acc)},
+    {lab:"Free cash flow", val:ctl("fcf_fy", t.fcf_fy, money(t.fcf_fy)), meta:`${pct(t.fcf_fy/t.revenue_fy)} of revenue`, sp:spark(m.map(x=>x.cumulative_fcf), acc)},
+    {lab:"YTD op. profit vs budget", val:ctl("ytd_op_variance", t.ytd_op_variance, smoney(t.ytd_op_variance)), meta:`Actual ${ctl("ytd_actual_op", t.ytd_actual_op, money(t.ytd_actual_op))} · Apr–Aug`,
+      sp:spark(m.slice(0,nAct).map(x=>x.actual_operating_profit - x.budget_operating_profit), css("--good"))},
+    {lab:"FY outlook op. profit", val:money(t.outlook_op), meta:`${deltaChip(t.outlook_op - t.budget_op_fy, smoney)} vs budget`, sp:spark(m.map(x=>x.outlook_operating_profit), acc, nAct)},
+  ];
+  $("#ovKpis").innerHTML = tiles.map(x => `<div class="panel kpi"><div class="lab">${x.lab}</div><div class="val num">${x.val}</div><div class="meta">${x.meta}</div>${x.sp}</div>`).join("");
+  $("#ovRevLegend").innerHTML = `<span style="color:var(--accent)"><i></i>Actual</span><span style="color:var(--accent)"><i class="dash"></i>Forecast</span><span style="color:var(--budget)"><i class="dash"></i>Budget ${ctl("budget_revenue_fy", t.budget_revenue_fy, money(t.budget_revenue_fy))}</span>`;
+  const act = m.map((x,i)=> i<nAct ? x.actual_revenue : null), fc = m.map((x,i)=> i>=nAct-1 ? x.outlook_revenue : null);
+  lineChart($("#ovRev"), {labels:MLAB, fmt:(v,full)=> full? money(v) : "$"+Math.round(v), tipTitle:i=>`${MLAB[i]} ${MONTHS[i].getFullYear()} · ${i<nAct?"actual":"forecast"}`,
+    series:[{name:"Budget", values:m.map(x=>x.budget_revenue), color:css("--budget"), dash:"4 4", w:1.5, label:"Budget"},
+            {name:"Actual", values:act, color:acc, markers:true, area:true},
+            {name:"Forecast", values:fc.map((v,i)=> i===nAct-1 ? m[i].actual_revenue : v), color:acc, dash:"5 4", label:"Outlook"}]});
+  barChart($("#ovOp"), {labels:MLAB, fmt:(v,full)=> full? money(v) : "$"+Math.round(v), H:260,
+    groups:[{name:"Outlook op. profit", values:m.map(x=>x.outlook_operating_profit)}],
+    colorOf:(g,i)=> i<nAct ? acc : `color-mix(in srgb, ${acc} 45%, ${css("--panel")})`,
+    ticksAt:{name:"Budget", values:m.map(x=>x.budget_operating_profit)}, tipTitle:i=>`${MLAB[i]} · ${i<nAct?"actual":"forecast"}`});
+  const pf = s.product_fy, maxRev = Math.max(...pf.map(p=>p.revenue));
+  $("#ovProd").innerHTML = `<thead><tr><th>Product line</th><th class="num">Revenue</th><th class="num">Mix</th><th class="num">Gross margin</th><th class="num">Contrib. margin</th><th class="num">Cost / good unit</th><th class="num">Yield</th></tr></thead><tbody>` +
+    pf.map(p => { const c = css(PRODUCTS.find(q=>q[0]===p.product_id)[2]);
+      return `<tr><td><span class="pdot" style="background:${c}"></span>${esc(PRODUCTS.find(q=>q[0]===p.product_id)[1])}</td>
+      <td class="num"><div class="bar-cell">${money(p.revenue)}<span class="minibar"><i style="left:0;width:${p.revenue/maxRev*100}%;background:${c}"></i></span></div></td>
+      <td class="num">${pct(p.mix)}</td><td class="num">${pct(p.gross_margin)}</td><td class="num">${pct(p.contribution_margin_pct)}</td>
+      <td class="num">${dollars(p.cost_per_good_unit, p.cost_per_good_unit<2?3:2)}</td><td class="num">${pct(p.yield)}</td></tr>`; }).join("") +
+    `<tr class="total"><td>Division</td><td class="num">${money(t.revenue_fy)}</td><td class="num">100.0%</td><td class="num">${pct(t.gm)}</td><td class="num">${pct(sum(pf.map(p=>p.contribution_margin))/t.revenue_fy)}</td><td class="num">—</td><td class="num">${pct(k.yield_division.value)}</td></tr></tbody>`;
+  const ci = Object.fromEntries(ST.capex_inputs.map(x=>[x.key,x.value])), cs = ST.capex_summary.find(x=>x.scenario===state.scenario);
+  $("#ovCapital").innerHTML = `<div class="phead"><div><h3>Capital decision</h3><p class="sub">FPGA automated final-test platform (hypothetical), $${f1(ci.capex)}m.</p></div>
+    <span class="chip ${cs.meets_all==="YES"?"pass":"fail"}"><span class="dot"></span>${state.scenario}: ${cs.meets_all==="YES"?"passes":"fails"}</span></div>
+    <p style="margin:0 0 12px;font:600 15px/1.35 var(--cond);letter-spacing:.01em;text-wrap:balance">${esc(ci.recommendation)}</p>
+    <div class="spec"><div>NPV @ ${pct(ci.rate,0)}</div><div>${money(cs.npv)}</div><div>IRR</div><div>${typeof cs.irr==="number"?pct(cs.irr):"n.m."}</div>
+    <div>Payback</div><div>${typeof cs.payback_years==="number"? cs.payback_years.toFixed(2)+" yrs" : esc(cs.payback_years)}</div>
+    <div>Break-even use of added capacity</div><div>${pct(cs.break_even_utilization)}</div></div>
+    <p class="src"><a href="#capital" data-go="capital">Open capital allocation →</a></p>`;
+}
+
+function binOf(r){ return r >= 1 ? ["SHORT","short"] : r >= 0.85 ? ["TIGHT","hot"] : ["OK",""]; }
+function renderOperations(){
+  const s = S(), pm = s.product_monthly, pf = s.product_fy;
+  $("#opsCards").innerHTML = PRODUCTS.map(([id,name,cv]) => {
+    const p = pf.find(x=>x.product_id===id), rows = pm.filter(x=>x.product_id===id), c = css(cv);
+    const bin = binOf(p.peak_demand_capacity_ratio);
+    return `<div class="panel"><div class="phead"><div><h3><span class="pdot" style="background:${c}"></span>${esc(name)}</h3><p class="sub">${units(p.units_sold)} units sold · ASP ${dollars(p.asp)}</p></div>
+      <span class="chip ${bin[1]==="short"?"fail":bin[1]==="hot"?"warn":"pass"}"><span class="dot"></span>Peak load ${p.peak_demand_capacity_ratio.toFixed(2)} · ${bin[0]}</span></div>
+      <div class="spec"><div>Final-test yield</div><div>${pct(p.yield)}</div><div>Capacity utilization</div><div>${pct(p.utilization)}</div>
+      <div>Cost per good unit</div><div>${dollars(p.cost_per_good_unit, p.cost_per_good_unit<2?3:2)}</div><div>Gross margin</div><div>${pct(p.gross_margin)}</div>
+      <div>Closing inventory (Mar-27)</div><div>${units(rows[rows.length-1].closing_inventory_units)} units</div><div>Unmet demand</div><div>${units(p.unmet_demand)} units</div></div>
+      <div class="lab" style="margin-top:10px;font:600 10.5px/1 var(--cond);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Cost per good unit, monthly</div>
+      ${spark(rows.map(x=>x.cost_per_good_unit), c)}</div>`; }).join("");
+  const heatC = r => r < 0.6 ? "--heat-0" : r < 0.7 ? "--heat-1" : r < 0.8 ? "--heat-2" : r < 0.9 ? "--heat-3" : "--heat-4";
+  const inkOn = r => (document.documentElement.dataset.theme==="light") ? (r>=0.8?"#fff":"var(--ink)") : (r>=0.9?"#0b0e13":"var(--ink)");
+  let h = `<div></div>` + MLAB.map(l=>`<div class="hd">${l}</div>`).join("");
+  PRODUCTS.forEach(([id,name,cv]) => {
+    h += `<div class="rl"><span class="pdot" style="background:${css(cv)}"></span>${esc(name)}</div>`;
+    pm.filter(x=>x.product_id===id).forEach((x,i) => { const b = binOf(x.demand_capacity_ratio);
+      h += `<div class="cell ${b[1]}" style="background:var(${heatC(x.demand_capacity_ratio)});color:${inkOn(x.demand_capacity_ratio)}" data-i="${i}" data-p="${id}" tabindex="0"
+        aria-label="${esc(name)} ${MLAB[i]}: ratio ${x.demand_capacity_ratio.toFixed(2)}, ${b[0]}"><span class="v">${x.demand_capacity_ratio.toFixed(2)}</span><span class="b">${b[0]}</span></div>`; });
+  });
+  $("#heat").innerHTML = h;
+  $("#heat").querySelectorAll(".cell").forEach(cell => {
+    cell.addEventListener("pointermove", ev => { const x = pm.filter(r=>r.product_id===cell.dataset.p)[+cell.dataset.i];
+      showTip(ev, `${PRODUCTS.find(p=>p[0]===cell.dataset.p)[1]} · ${MLAB[+cell.dataset.i]}`, [
+        {k:"Demand", v:units(x.demand_units)+" units"}, {k:"Good-unit capacity", v:units(x.good_unit_capacity)+" units"},
+        {k:"Ratio", v:x.demand_capacity_ratio.toFixed(3)}, {k:"Utilization", v:pct(x.utilization)}, {k:"Unmet demand", v:units(x.unmet_demand)}]); });
+    cell.addEventListener("pointerleave", hideTip);
+  });
+  $("#heatLegend").innerHTML = `<span>OK &lt; 0.85</span><span style="color:var(--warn)">TIGHT 0.85–1.00</span><span style="color:var(--crit-ink)">SHORT ≥ 1.00</span>
+    <span style="display:inline-flex;gap:2px">${["--heat-0","--heat-1","--heat-2","--heat-3","--heat-4"].map(v=>`<i class="box" style="background:var(${v});width:14px"></i>`).join("")}</span><span>0.6 → 0.9+</span>`;
+  $("#gmLegend").innerHTML = PRODUCTS.map(([id,n,cv])=>`<span style="color:${css(cv)}"><i></i>${esc(n)}</span>`).join("");
+  lineChart($("#opsGm"), {labels:MLAB, fmt:(v,full)=> full? pct(v): Math.round(v*100)+"%", H:250, yPad:0.25,
+    series: PRODUCTS.map(([id,n,cv]) => ({name:n, values:pm.filter(x=>x.product_id===id).map(x=>x.gross_margin), color:css(cv), label:id}))});
+  $("#opsDemand").innerHTML = PRODUCTS.map(([id,n])=>`<div><div style="font:600 11px/1.2 var(--cond);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)">${esc(n)}</div><div class="chart" id="dm-${id}"></div></div>`).join("");
+  PRODUCTS.forEach(([id,n,cv]) => { const rows = pm.filter(x=>x.product_id===id);
+    lineChart($("#dm-"+id), {labels:MLAB.map(l=>l[0]), tipTitle:i=>`${n} · ${MLAB[i]}`, fmt:(v,full)=> full? units(v)+" units" : v.toFixed(v<3?2:0), H:170, yPad:0.15,
+      series:[{name:"Good-unit capacity", values:rows.map(x=>x.good_unit_capacity), color:css("--budget"), dash:"4 3", w:1.5},
+              {name:"Demand", values:rows.map(x=>x.demand_units), color:css(cv), area:true}]}); });
+}
+
+function renderVariance(){
+  const vp = Object.fromEntries(ST.variance_pnl.map(x=>[x.line_id,x])), req = Object.fromEntries(ST.variance_required.map(x=>[x.variance_id,x]));
+  const t = totals(state.scenario);
+  const chip = (lab, st) => `<span class="chip ${st==="Reconciled"?"pass":"fail"}"><span class="dot"></span>${lab}: ${st}</span>`;
+  $("#recoChips").innerHTML = chip("Revenue decomposition", req.reconciliation_revenue.assessment) + chip("Profit bridge", req.reconciliation_bridge.assessment);
+  const tile = (lab, a, b, fmtFn, isPct) => { const d = a-b;
+    return `<div class="panel kpi"><div class="lab">${lab}</div><div class="val num">${fmtFn(a)}</div><div class="meta">${deltaChip(d, isPct?pts:smoney)} vs budget ${fmtFn(b)}</div></div>`; };
+  $("#varKpis").innerHTML =
+    `<div class="panel kpi"><div class="lab">Revenue, YTD</div><div class="val num">${ctl("ytd_actual_revenue", t.ytd_actual_revenue, money(t.ytd_actual_revenue))}</div><div class="meta">${deltaChip(vp.rev.variance, smoney)} vs budget ${money(vp.rev.budget)}</div></div>` +
+    tile("Gross profit, YTD", vp.gp.actual, vp.gp.budget, money) + tile("Gross margin, YTD", vp.gm.actual, vp.gm.budget, v=>pct(v), true) +
+    `<div class="panel kpi"><div class="lab">Operating profit, YTD</div><div class="val num">${money(vp.op.actual)}</div><div class="meta">${deltaChip(vp.op.variance, smoney)} vs budget ${money(vp.op.budget)}</div></div>` +
+    tile("Operating expenses, YTD", vp.opex.actual, vp.opex.budget, money).replace(/delta (up|down)/, m => m.includes("up")?"delta down":"delta up");
+  waterfall($("#waterfall"), ST.op_bridge);
+  $("#reqVar").innerHTML = `<thead><tr><th>Variance</th><th class="num">$m</th><th>Assessment</th></tr></thead><tbody>` +
+    ST.variance_required.filter(x=>!x.variance_id.startsWith("reconciliation")).map(x => `<tr${x.variance_id==="s_op"||x.variance_id==="s_rev"?' class="total"':""}><td>${esc(x.label)}</td>
+      <td class="num">${smoney(x.value)}</td><td><span class="chip ${x.value>=0?"pass":"fail"}"><span class="dot"></span>${esc(x.assessment)}</span></td></tr>`).join("") + `</tbody>`;
+  const rv = ST.revenue_variance, mx = Math.max(...rv.flatMap(x=>[x.MCU,x.ANALOG,x.FPGA,x.division].map(Math.abs)));
+  const dv = v => `<div class="bar-cell">${(v>=0?"+":"−")+f1(Math.abs(v))}<span class="minibar"><i style="${v>=0?"left:50%":"right:50%"};width:${Math.abs(v)/mx*50}%;background:${v>=0?css("--good"):css("--crit")}"></i></span></div>`;
+  $("#pvm").innerHTML = `<thead><tr><th>Component</th>${PRODUCTS.map(p=>`<th class="num"><span class="pdot" style="background:${css(p[2])}"></span>${p[0]==="ANALOG"?"Analog":p[0]}</th>`).join("")}<th class="num">Division</th></tr></thead><tbody>` +
+    rv.map(x => `<tr${x.component_id==="r_tot"?' class="total"':""}><td>${esc(x.label)}</td>${["MCU","ANALOG","FPGA","division"].map(k=>`<td class="num">${dv(x[k])}</td>`).join("")}</tr>`).join("") + `</tbody>`;
+  const m = S().monthly.filter(x=>x.actual_revenue!==null);
+  barChart($("#varMonthly"), {labels:m.map((x,i)=>MLAB[i]), fmt:(v,full)=> full? smoney(v) : (v>0?"+":"")+v.toFixed(0), H:240,
+    groups:[{name:"Revenue variance", values:m.map(x=>x.actual_revenue-x.budget_revenue), color:css("--s1")},
+            {name:"Op. profit variance", values:m.map(x=>x.actual_operating_profit-x.budget_operating_profit), color:css("--s2")}]});
+  const lines = ["rev_mcu","rev_ana","rev_fpga","rev","cor","gp","gm","rd","sga","opex","op","om"];
+  $("#varPnl").innerHTML = `<thead><tr><th>Line</th><th class="num">Budget</th><th class="num">Actual</th><th class="num">Variance</th><th>Fav / unfav</th></tr></thead><tbody>` +
+    lines.map(k => { const x = vp[k], isP = x.unit==="%";
+      return `<tr${["rev","gp","op"].includes(k)?' class="total"':""}><td>${esc(x.label)}</td><td class="num">${isP?pct(x.budget):f1(x.budget)}</td><td class="num">${isP?pct(x.actual):f1(x.actual)}</td>
+        <td class="num">${isP?pts(x.variance):(x.variance>=0?"+":"−")+f1(Math.abs(x.variance))}</td>
+        <td>${isP?"":`<span class="chip ${x.variance>=0?"pass":"fail"}"><span class="dot"></span>${x.variance>=0?"Fav":"Unfav"}</span>`}</td></tr>`; }).join("") + `</tbody>`;
+  const vk = ST.variance_kpis, fmtK = {sold:v=>units(v), asp:v=>dollars(v,3), yld:v=>pct(v), util:v=>pct(v), cpgu:v=>dollars(v,3), unmet:v=>units(v)};
+  $("#varKpiTbl").innerHTML = `<thead><tr><th>KPI</th><th>Product</th><th class="num">Budget</th><th class="num">Actual</th><th class="num">Δ</th></tr></thead><tbody>` +
+    vk.filter(x=>x.kpi_id!=="unmet").map(x => { const d = x.actual-x.budget, good = x.kpi_id==="cpgu" ? d<=0 : d>=0, p = PRODUCTS.find(q=>q[0]===x.product_id);
+      const dtxt = ["yld","util"].includes(x.kpi_id) ? pts(d) : (d>=0?"+":"−") + (["asp","cpgu"].includes(x.kpi_id)? "$"+Math.abs(d).toFixed(3) : f1(Math.abs(d)));
+      return `<tr><td>${esc(x.label)}</td><td><span class="pdot" style="background:${css(p[2])}"></span>${p[0]==="ANALOG"?"Analog":p[0]}</td><td class="num">${fmtK[x.kpi_id](x.budget)}</td><td class="num">${fmtK[x.kpi_id](x.actual)}</td>
+      <td class="num"><span class="delta ${Math.abs(d)<1e-9?"flat":good?"up":"down"}">${dtxt}</span></td></tr>`; }).join("") + `</tbody>`;
+}
+
+function renderScenarios(){
+  const T = Object.fromEntries(SC.map(([s]) => [s, totals(s)]));
+  const metrics = [["Revenue","revenue_fy"],["Gross profit","gross_profit_fy"],["Operating profit","operating_profit_fy"],["Net income","net_income_fy"],["Free cash flow","fcf_fy"]];
+  const host = $("#scBars"); host.innerHTML = "";
+  const W = Math.max(280, host.clientWidth), rowH = 24, gap = 16, labW = W < 480 ? 96 : 130, H = metrics.length*(3*rowH+gap);
+  const svg = el("svg",{viewBox:`0 0 ${W} ${H}`},host), vmax = Math.max(...metrics.flatMap(([_,k])=>SC.map(([s])=>T[s][k])));
+  metrics.forEach(([lab,k],mi) => {
+    const y0 = mi*(3*rowH+gap);
+    const t = el("text",{x:0,y:y0+rowH*1.5+4,class:"lbl"},svg); t.style.fill = css("--ink"); t.textContent = lab;
+    SC.forEach(([s,cv],si) => { const v = T[s][k], w = (W-labW-80)*v/vmax, y = y0+si*rowH+4, c = css(cv);
+      const r = el("rect",{x:labW,y,width:Math.max(2,w),height:rowH-8,rx:3,fill:c,opacity: s===state.scenario?1:0.55},svg);
+      const vt = el("text",{x:labW+w+6,y:y+rowH/2+0,"dominant-baseline":"middle"},svg); vt.style.fill = s===state.scenario?css("--ink"):css("--ink-2");
+      vt.textContent = `$${f1(v)}m`;
+      if (s===state.scenario && k==="net_income_fy") vt.setAttribute("data-ctl","net_income_fy"), vt.setAttribute("data-raw", v);
+      r.addEventListener("pointermove", ev => showTip(ev, `${lab} · ${s}`, [{k:"FY2027", v:money(v), c}])); r.addEventListener("pointerleave", hideTip); });
+  });
+  const dv = ST.scenario_drivers, fmtD = (x,v) => x.unit==="pts" ? (v>=0?"+":"−")+Math.abs(v*100).toFixed(1)+" pts" : ["util","tax","capex_pct"].includes(x.driver_id) ? pct(v) : spct(v);
+  $("#scDrivers").innerHTML = `<thead><tr><th>Driver</th>${SC.map(([s])=>`<th class="num${s===state.scenario?" act":""}">${s}</th>`).join("")}</tr></thead><tbody>` +
+    dv.map(x => `<tr><td style="white-space:normal;min-width:160px">${esc(x.label.replace(" (percentage points vs base-year yield)","").replace(" (% of revenue, excl. proposed test-equipment project)"," (% of revenue)"))}</td>${SC.map(([s])=>`<td class="num${s===state.scenario?" act":""}">${fmtD(x, x[s])}</td>`).join("")}</tr>`).join("") + `</tbody>`;
+  lineChart($("#scLines"), {labels:MLAB, fmt:(v,full)=> full? money(v) : "$"+Math.round(v), H:260,
+    series:[{name:"Budget", values:D.scenarios.Base.monthly.map(x=>x.budget_revenue), color:css("--budget"), dash:"4 4", w:1.5}]
+      .concat(SC.map(([s,cv]) => ({name:s, values:D.scenarios[s].monthly.map(x=>x.revenue), color:css(cv), w: s===state.scenario?2.6:1.6, label:s})))});
+  const rows = [["Revenue growth vs FY26", s => T[s].revenue_fy/1000-1, v=>spct(v)], ["Gross margin", s=>T[s].gm, v=>pct(v)], ["Operating margin", s=>T[s].om, v=>pct(v)],
+    ["Net income", s=>T[s].net_income_fy, money], ["Free cash flow", s=>T[s].fcf_fy, money], ["FCF margin", s=>T[s].fcf_fy/T[s].revenue_fy, v=>pct(v)],
+    ["FY outlook op. profit", s=>T[s].outlook_op, money], ["Outlook vs budget", s=>T[s].outlook_op - T[s].budget_op_fy, smoney]];
+  $("#scTable").innerHTML = `<thead><tr><th>Metric</th>${SC.map(([s])=>`<th class="num${s===state.scenario?" act":""}">${s}</th>`).join("")}</tr></thead><tbody>` +
+    rows.map(([lab,fn,fm]) => `<tr><td>${lab}</td>${SC.map(([s])=>`<td class="num${s===state.scenario?" act":""}">${fm(fn(s))}</td>`).join("")}</tr>`).join("") + `</tbody>`;
+}
+
+function renderCapital(){
+  const ci = Object.fromEntries(ST.capex_inputs.map(x=>[x.key,x.value])), cs = Object.fromEntries(ST.capex_summary.map(x=>[x.scenario,x]));
+  $("#capReco").innerHTML = `<div class="callout"><span class="badge">Recommendation</span><div><h3>${esc(ci.recommendation)}</h3><p>${esc(ci.rule)}</p><p>${esc(ci.checkpoint)}</p></div></div>`;
+  const a = cs[state.scenario];
+  const npvCalc = npvFromCashflows(state.scenario);
+  $("#capKpis").innerHTML = [
+    ["NPV @ "+pct(ci.rate,0), state.scenario==="Base" ? ctl("capex_npv_base", npvCalc, money(npvCalc)) : money(npvCalc), `${state.scenario} scenario`],
+    ["IRR", typeof a.irr==="number"?pct(a.irr):"n.m.", `Hurdle ${pct(ci.hurdle,0)}`],
+    ["Payback", typeof a.payback_years==="number"? a.payback_years.toFixed(2)+" yrs" : esc(a.payback_years), `Limit ${ci.max_pb.toFixed(1)} yrs`],
+    ["Break-even utilization", pct(a.break_even_utilization), `of added capacity · implied ${pct(a.implied_utilization)}`],
+    ["Investment", money(ci.capex), `$${f1(ci.price)}m equipment + $${f1(ci.install)}m install`],
+  ].map(([l,v,m]) => `<div class="panel kpi"><div class="lab">${l}</div><div class="val num">${v}</div><div class="meta">${m}</div></div>`).join("");
+  const years = [0,1,2,3,4,5,6];
+  lineChart($("#capCum"), {labels:years.map(y=>"Y"+y), fmt:(v,full)=> full? money(v) : "$"+Math.round(v), H:280, yPad:0.1,
+    tipTitle:i=>`Year ${i} · ${ST.capex_cashflows.find(x=>x.year===i).fiscal_year}`,
+    series: SC.map(([s,cv]) => ({name:s, values:ST.capex_cashflows.filter(x=>x.scenario===s).map(x=>x.cumulative_fcf), color:css(cv), markers:true, w:s===state.scenario?2.6:1.6, label:s}))});
+  const crit = [["NPV > 0","npv_test", s=>money(cs[s].npv)],["IRR ≥ "+pct(ci.hurdle,0),"irr_test", s=>typeof cs[s].irr==="number"?pct(cs[s].irr):"n.m."],
+                ["Payback ≤ "+ci.max_pb.toFixed(1)+" yrs","payback_test", s=>typeof cs[s].payback_years==="number"?cs[s].payback_years.toFixed(2)+" yrs":"none"]];
+  $("#capCrit").innerHTML = `<thead><tr><th>Criterion</th>${SC.map(([s])=>`<th class="num${s===state.scenario?" act":""}">${s}</th>`).join("")}</tr></thead><tbody>` +
+    crit.map(([lab,k,vf]) => `<tr><td>${lab}</td>${SC.map(([s])=>`<td class="num${s===state.scenario?" act":""}"><div style="display:grid;gap:4px;justify-items:end">${vf(s)}<span class="chip ${cs[s][k]==="PASS"?"pass":"fail"}"><span class="dot"></span>${cs[s][k]}</span></div></td>`).join("")}</tr>`).join("") +
+    `<tr class="total"><td>Meets all criteria</td>${SC.map(([s])=>`<td class="num${s===state.scenario?" act":""}"><span class="chip ${cs[s].meets_all==="YES"?"pass":"fail"}"><span class="dot"></span>${cs[s].meets_all}</span></td>`).join("")}</tr></tbody>`;
+  const cf = ST.capex_cashflows.filter(x=>x.scenario===state.scenario);
+  $("#capBarsSub").textContent = `${state.scenario} scenario, $m. Year 0 = −$${f1(ci.capex)}m investment.`;
+  barChart($("#capBars"), {labels:cf.map(x=>"Y"+x.year), fmt:(v,full)=> full? money(v) : "$"+Math.round(v), H:240, tipTitle:i=>`Year ${i} · ${cf[i].fiscal_year}`,
+    groups:[{name:"Incremental FCF", values:cf.map(x=>x.fcf)}], colorOf:(g,i,v)=> v>=0 ? css("--good") : css("--crit")});
+  const specRows = [["Equipment purchase price",money(ci.price)],["Installation & qualification",money(ci.install)],["Added final-test capacity",ci.add_cap.toFixed(2)+"m units / month"],
+    ["FPGA yield improvement","+"+(ci.yld_gain*100).toFixed(1)+" pts"],["Operating-cost savings",money(ci.savings)+" / yr"],["Maintenance",money(ci.maint)+" / yr"],
+    ["Useful life",ci.life+" years"],["Discount rate",pct(ci.rate,1)],["IRR hurdle",pct(ci.hurdle,1)],["Maximum payback",ci.max_pb.toFixed(1)+" years"]];
+  $("#capSpec").innerHTML = specRows.map(([k,v])=>`<div>${k}</div><div>${v}</div>`).join("");
+}
+
+function renderValidation(){
+  const ids = [["revenue_fy","Revenue FY2027"],["gross_profit_fy","Gross profit FY2027"],["operating_profit_fy","Operating profit FY2027"],["net_income_fy","Net income FY2027"],
+    ["fcf_fy","Free cash flow FY2027"],["budget_revenue_fy","Budget revenue FY2027"],["ytd_actual_revenue","YTD actual revenue"],["ytd_actual_op","YTD actual operating profit"],
+    ["ytd_op_variance","YTD operating-profit variance"],["capex_npv_base","Capex NPV (Base)"]];
+  let n = 0, ok = 0, rows = "";
+  SC.forEach(([s]) => { const c = Object.fromEntries(D.scenarios[s].control_totals.map(x=>[x.control_id,x.value])), t = totals(s);
+    ids.forEach(([id,lab]) => { const d = t[id] - c[id], pass = Math.abs(d) <= 1e-6*Math.max(1,Math.abs(c[id])); n++; ok += pass;
+      rows += `<tr><td>${s}</td><td>${lab}</td><td class="num">${c[id].toFixed(4)}</td><td class="num">${t[id].toFixed(4)}</td><td class="num">${d.toExponential(1)}</td>
+        <td><span class="chip ${pass?"pass":"fail"}"><span class="dot"></span>${pass?"PASS":"FAIL"}</span></td></tr>`; }); });
+  $("#valTbl").innerHTML = `<thead><tr><th>Scenario</th><th>Control total</th><th class="num">Excel</th><th class="num">Dashboard (recomputed)</th><th class="num">Difference</th><th>Result</th></tr></thead><tbody>${rows}</tbody>`;
+  const vc = $("#valChip"); vc.className = "chip " + (ok===n?"pass":"fail"); vc.lastElementChild.textContent = `${ok} / ${n} match Excel`;
+  const meta = s => Object.fromEntries(D.scenarios[s].meta.map(x=>[x.key,x.value]));
+  $("#valSrc").innerHTML = `Source workbook ${esc(D.source_workbook)} · SHA-256 ${D.source_sha256.slice(0,16)}… · exported ${esc(D.generated_utc)} · Excel Checks tab: ` +
+    SC.map(([s])=>`${s} ${esc(meta(s).checks_status)}`).join(" · ");
+  const bt = window.__BROWSER_TEST__;
+  $("#browserTest").innerHTML = bt ? `<div class="spec"><div>Result</div><div><span class="chip ${bt.failed===0?"pass":"fail"}"><span class="dot"></span>${bt.failed===0?"PASS":"FAIL"}</span></div>
+      <div>Displayed values compared</div><div>${bt.compared}</div><div>Failures</div><div>${bt.failed}</div><div>Scenarios exercised</div><div>${esc(bt.scenarios.join(", "))}</div>
+      <div>Run (UTC)</div><div>${esc(bt.run_utc)}</div></div><p class="src">tests/validate_dashboard.py · headless Chromium reads each [data-ctl] value on the rendered page and compares it with the Excel control total, both unrounded and as displayed.</p>`
+    : `<p class="sub">Not yet run for this build. The dashboard is not verified until this test passes.</p>`;
+  $("#classSpec").innerHTML = [["Reported public data","Microchip SEC filings (history only)"],["Calculated value","Excel formula on other cells"],
+    ["User-provided assumption","Scenario drivers, criteria, logged with owner"],["Simulated operational data","Division demand, capacity, yield, cost, actuals"]].map(([a,b])=>`<div>${a}</div><div style="font-family:var(--sans);color:var(--ink-2)">${b}</div>`).join("");
+}
+
+/* ================= shell ================= */
+const RENDER = {overview:renderOverview, operations:renderOperations, variance:renderVariance, scenarios:renderScenarios, capital:renderCapital, validation:renderValidation};
+function render(){
+  document.querySelectorAll("#scenarioSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.s===state.scenario));
+  document.querySelectorAll("nav.tabs a").forEach(a => { if (a.dataset.p===state.page) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  document.querySelectorAll(".page").forEach(p => p.hidden = p.dataset.page !== state.page);
+  RENDER[state.page]();
+  const allOk = SC.every(([s]) => D.scenarios[s].meta.find(x=>x.key==="checks_status").value === "ALL CHECKS PASS");
+  const cc = $("#checksChip"); cc.className = "chip " + (allOk?"pass":"fail");
+  cc.lastElementChild.textContent = allOk ? "Excel checks: all pass" : "Excel checks: failures";
+}
+function setPage(p){ if (!RENDER[p]) p = "overview"; state.page = p; render(); try{ localStorage.setItem("ecd-page", p); }catch(e){} }
+document.querySelectorAll("#scenarioSeg button").forEach(b => b.addEventListener("click", () => { state.scenario = b.dataset.s; try{ localStorage.setItem("ecd-scenario", state.scenario); }catch(e){} render(); }));
+document.querySelectorAll("nav.tabs a").forEach(a => a.addEventListener("click", ev => { ev.preventDefault(); history.replaceState(null,"","#"+a.dataset.p); setPage(a.dataset.p); scrollTo({top:0}); }));
+document.addEventListener("click", ev => { const g = ev.target.closest("[data-go]"); if (g){ ev.preventDefault(); history.replaceState(null,"","#"+g.dataset.go); setPage(g.dataset.go); scrollTo({top:0}); } });
+$("#themeBtn").addEventListener("click", () => { const r = document.documentElement, next = r.dataset.theme === "light" ? "dark" : "light"; r.dataset.theme = next; try{ localStorage.setItem("ecd-theme", next); }catch(e){} });
+new MutationObserver(() => render()).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(render, 150); });
+$("#disclaimer").textContent = D.disclaimer + " Historical figures are Microchip Technology's reported data; everything at division level is simulated or assumed.";
+$("#foot").innerHTML = `Embedded Control Division is fictional. Reported history: Microchip Technology Inc. Forms 10-K FY2023, FY2024, FY2026 and 10-Q Q1 FY2027 (SEC EDGAR).<br>All figures come from model/Microchip_FPA_Model.xlsx via Dash_Export; the dashboard performs no financial logic beyond summing exported records. Exported ${esc(D.generated_utc)}.`;
+try { const t = localStorage.getItem("ecd-theme"); if (t && !document.documentElement.dataset.theme) document.documentElement.dataset.theme = t; } catch(e){}
+try { const s = localStorage.getItem("ecd-scenario"); if (s && D.scenarios[s]) state.scenario = s; } catch(e){}
+const hp = (location.hash||"").slice(1);
+setPage(RENDER[hp] ? hp : "overview");
+window.__ECD__ = {setScenario: s => { state.scenario = s; render(); }, setPage, totals};
+})();
+</script>

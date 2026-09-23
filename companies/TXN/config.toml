@@ -1,0 +1,218 @@
+# ============================================================================================
+# Company configuration: Texas Instruments (TXN)
+# Build + test + export:  python scripts/run_all_validations.py --company TXN
+# Reported data: companies/TXN/reported_financials.csv (from collect_reported_data.py). Everything else here is a
+# user-provided assumption or simulated operational data, logged in assumptions_log.csv.
+# ============================================================================================
+
+[company]
+ticker = "TXN"
+name = "Texas Instruments"
+short_name = "TI"
+legal_name = "Texas Instruments Incorporated"
+exchange = "NASDAQ"
+cik = "0000097476"
+fiscal_year_end = "December 31"
+history_years = ["FY2021", "FY2022", "FY2023", "FY2024", "FY2025"]
+base_year = "FY2025"
+reported_csv = "reported_financials.csv"
+filings_summary = "Forms 10-K FY2022, FY2023, FY2024, FY2025 and 10-Q Q2 FY2026 (SEC EDGAR)"
+
+[company.quarter]
+prior = "Q2 FY2025"
+latest = "Q2 FY2026"
+label = "second fiscal quarter (April-June)"
+
+[company.checks]
+[[company.checks.identity]]
+name = "segment gross profits sum to total gross profit"
+total = "gross_profit"
+parts = ["segment_info:analog_gross_profit", "segment_info:embedded_gross_profit", "segment_info:other_gross_profit"]
+
+[forecast]
+year = "FY2026"
+start = "2026-01-01"                           # TI's fiscal year is the calendar year
+actual_months = 5                              # Jan-May are simulated actuals (the engine's layout uses five)
+actuals_label = "Jan-May 2026"
+as_of = "September 2026"
+
+[division]
+name = "Power, Signal & Embedded Division"
+short = "PSE"
+base_revenue = 1000.0
+rd0 = 120.0                                    # 12% of revenue (TI company-wide 11.8% in FY2025)
+sga0 = 100.0                                   # 10% of revenue (TI company-wide 10.5% in FY2025)
+rd_note = "12% of revenue. TI company-wide R&D was 11.8% of revenue in FY2025."
+sga_note = "10% of revenue. TI company-wide SG&A was 10.5% of revenue in FY2025."
+capacity_definition = "Internal final-test capacity"
+
+# Option B (user decision): power management and signal chain are an ASSUMED split of TI's reported Analog segment
+# (TI does not report them separately); embedded processors = TI's Embedded Processing segment. TI's "Other" segment
+# (about 5.5% of FY2025 revenue) is not modeled, so the three-product mix is renormalized to 100%.
+[[products]]
+key = "pwr"
+abbr = "Power"
+tag = "Power"
+id = "POWER"
+name = "Power-management chips"
+short = "Power management"
+segment = "segment:analog"
+segment_share = 0.50
+segment_note = "Power = 50% of TI's reported Analog segment (user-provided split; TI does not report power separately)."
+asp0 = 0.60
+yld0 = 0.95
+vc0 = 0.14
+fix0 = 5.8
+cap0 = 88.0
+gdiff = 0.02
+inv_m = 1.0
+a_dem = 0.05
+a_asp = -0.015
+a_yld = 0.945
+a_util = 0.84
+a_vc = 0.045
+a_fix = 5.9
+
+[[products]]
+key = "sig"
+abbr = "Signal chain"
+tag = "Signal"
+id = "SIGNAL"
+name = "Signal-chain chips"
+short = "Signal chain"
+segment = "segment:analog"
+segment_share = 0.50
+segment_note = "Signal chain = the other 50% of Analog."
+asp0 = 0.95
+yld0 = 0.93
+vc0 = 0.21
+fix0 = 6.2
+cap0 = 60.0
+gdiff = 0.02
+inv_m = 1.0
+a_dem = 0.01
+a_asp = -0.005
+a_yld = 0.93
+a_util = 0.76
+a_vc = 0.035
+a_fix = 6.2
+
+[[products]]
+key = "emb"
+abbr = "Embedded"
+tag = "Embedded"
+id = "EMBEDDED"
+name = "Embedded processors"
+short = "Embedded processors"
+segment = "segment:embedded_processing"
+asp0 = 3.40
+yld0 = 0.88
+vc0 = 0.95
+fix0 = 2.5
+cap0 = 7.0
+gdiff = -0.06
+inv_m = 1.0
+a_dem = -0.05
+a_asp = 0.01
+a_yld = 0.86
+a_util = 0.72
+a_vc = 0.04
+a_fix = 2.6
+
+[product_notes]
+asp0 = "Simulated. Order of magnitude typical for each product type."
+yld0 = "Simulated. Good units / units tested. Larger embedded die -> lower yield."
+vc0 = "Simulated. Wafer, package, test consumables per unit started. Calibrated so the base-year division gross margin (57.2%) is close to TI's reported FY2025 57.0%."
+fix0 = "Simulated. Factory overhead, depreciation, test labor."
+cap0 = "Simulated. Capacity = units the internal test floor can process per month (A-016)."
+gdiff = "Simulated. TI Q2 FY2026 revenue growth was Analog +26.4%, Embedded Processing +16.1% (section B)."
+inv_m = "Simulated opening balance at 1-Jan-2026."
+segment_share = "User-provided assumption (option B). TI does not report power and signal chain separately; 50/50 is a neutral split. Change it in companies/TXN/config.toml."
+
+[drivers.dem_g]
+values = [0.03, 0.15, 0.24]
+why = "TI Q2 FY2026 revenue +22.8% YoY (section B). Base takes a more cautious +15% for the full year."
+[drivers.asp_chg]
+values = [-0.03, -0.01, 0.01]
+why = "Mature analog prices drift down slowly; downside = price competition."
+[drivers.yld_adj]
+values = [-0.02, 0.0, 0.01]
+why = "Applied to each product's base-year final-test yield (section D)."
+[drivers.util]
+values = [0.68, 0.78, 0.86]
+why = "Assumed. TI does not disclose utilization; implied base-year loading is shown in section D."
+[drivers.mat_inf]
+values = [0.05, 0.03, 0.01]
+why = "Wafer, substrate and packaging cost inflation."
+[drivers.rd_g]
+values = [0.02, 0.05, 0.08]
+why = "TI R&D grew +6.3% in FY2025 (section B)."
+[drivers.sga_g]
+values = [0.01, 0.03, 0.05]
+why = "TI SG&A grew +3.7% in FY2025 (section B)."
+[drivers.capex_pct]
+values = [0.04, 0.05, 0.06]
+why = "TI capex was 25.7% of revenue in FY2025 (section B), driven by its corporate 300-mm fab build-out; division equipment capex assumed far lower."
+[drivers.tax]
+values = [0.16, 0.13, 0.12]
+why = "TI effective rate about 12-13% in FY2021-FY2025 (section B). Downside = higher rate."
+
+[seasonality]
+factors = [0.94, 0.96, 1.02, 0.99, 1.00, 1.03, 1.02, 1.03, 1.05, 1.02, 0.98, 0.96]
+note = "Softer January-February, quarter-end pulls, Q3 seasonal peak, December dip"
+
+[pnl]
+dso = 40
+dpo = 36
+dep_share = 0.35
+life_months = 60
+dso_note = "TI DSO about 40 days in FY2025 (reference below). AR = monthly revenue x 12 x DSO / 365"
+
+[actuals]
+noise = [1.01, 0.98, 1.02, 0.99, 1.00]
+a_rd = 10.8
+a_sga = 8.4
+a_capex = 0.045
+notes = { a_dem = "Power demand ahead on industrial and automotive restocking; embedded behind plan", a_asp = "Budget assumed -1.0% for every product", a_yld = "Embedded yield below plan on the older test handlers (budget 88%)", a_util = "Power test floor run hard to meet demand; embedded loading cut (budget 78%)", a_vc = "Wafer and substrate price increases (budget +3.0%)", a_fix = "Power overtime on the test floor", a_rd = "Budget $10.5m: added design engineers", a_sga = "Budget $8.58m: travel and marketing held back", a_capex = "Budget 5.0%: some projects deferred" }
+
+[capex]
+target = "pwr"
+project = "power-management final-test expansion cell"
+project_title = "Power-Management Final-Test Expansion Cell"
+target_label = "Power"
+project_short = "power test cell"
+project_noun = "Test cell"
+yield_tile_note = ""
+price = 22.0
+install = 2.5
+add_cap = 6.0
+yld_gain = 0.01
+savings = 1.2
+maint = 1.0
+life = 6
+salvage = 0.0
+umax = 0.90
+erosion = 0.02
+rate = 0.09
+hurdle = 0.11
+max_pb = 4.0
+growth_after = [0.02, 0.07, 0.11]
+growth_note = "Downside: power demand stalls; Upside: industrial and automotive recovery continues"
+price_note = "High-parallel test handlers and testers for power-management devices"
+savings_note = "Retire overtime on the existing test floor"
+rate_note = "Assumed. TI does not report a WACC; semiconductor WACCs are commonly 8-11%"
+
+[history.notes]
+"segment:analog" = "Reported segment. Split 50/50 into power management and signal chain in this model (user-provided assumption)."
+"segment:other" = "TI's reported Other segment. Not modeled in the division (mix renormalized over the three products)."
+"nonop:interest" = "Printed as a positive expense; stored negative (effect on pre-tax income)."
+"other_opex:acquisition" = "Printed in the FY2023 10-K for FY2021-FY2022 only; blank = not presented, treated as 0."
+"cf:da" = "Depreciation only; TI prints amortization of capitalized software separately."
+"cf:capex" = "Printed as a cash outflow (negative). Analysis converts to positive spend."
+
+[history.source_ids]
+"0000097476-26-000059" = "S-001 10-K FY2025"
+"0000097476-24-000007" = "S-002 10-K FY2023"
+"0000097476-23-000007" = "S-003 10-K FY2022"
+"0000097476-25-000007" = "S-004 10-K FY2024"
+"0000097476-26-000152" = "S-005 10-Q Q2 FY2026"

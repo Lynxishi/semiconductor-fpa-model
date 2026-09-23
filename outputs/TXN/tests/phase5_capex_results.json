@@ -1,0 +1,35 @@
+[
+  {
+    "scenario": "Downside",
+    "npv": -15.855,
+    "irr": -0.178,
+    "payback": null,
+    "break_even_util": 0.162,
+    "npv_at_break_even": 6.661338147750939e-15,
+    "meets_criteria": false,
+    "max_abs_diff_vs_excel": 8.881784197001252e-15,
+    "result": "PASS"
+  },
+  {
+    "scenario": "Base",
+    "npv": 60.44,
+    "irr": 0.5157,
+    "payback": 2.422,
+    "break_even_util": 0.146,
+    "npv_at_break_even": 6.661338147750939e-15,
+    "meets_criteria": true,
+    "max_abs_diff_vs_excel": 7.105427357601002e-15,
+    "result": "PASS"
+  },
+  {
+    "scenario": "Upside",
+    "npv": 100.404,
+    "irr": 1.0484,
+    "payback": 1.042,
+    "break_even_util": 0.1396,
+    "npv_at_break_even": 1.7763568394002505e-15,
+    "meets_criteria": true,
+    "max_abs_diff_vs_excel": 1.1368683772161603e-13,
+    "result": "PASS"
+  }
+]

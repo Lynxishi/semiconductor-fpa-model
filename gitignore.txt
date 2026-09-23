@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+node_modules/
+tests/_runs*/
+tests/_scenario_runs*/
+tests/_export_runs/
+~$*.xlsx
+.~lock.*
+.DS_Store
+outputs/*/tests/_*runs*/
+outputs/*/tests/_export_runs/
+.venv/
+venv/

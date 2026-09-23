@@ -1,0 +1,44 @@
+[
+  {
+    "scenario": "Downside",
+    "revenue": 1001.5,
+    "operating_profit": 314.5,
+    "op_margin": 0.314,
+    "net_income": 264.1,
+    "fcf": 311.9,
+    "monthly_values_compared": 72,
+    "max_abs_diff": 4.547473508864641e-13,
+    "fy_max_abs_diff": 1.7053025658242404e-12,
+    "formula_errors": 0,
+    "checks_tab": "ALL CHECKS PASS",
+    "result": "PASS"
+  },
+  {
+    "scenario": "Base",
+    "revenue": 1145.5,
+    "operating_profit": 434.9,
+    "op_margin": 0.3797,
+    "net_income": 378.4,
+    "fcf": 379.3,
+    "monthly_values_compared": 72,
+    "max_abs_diff": 4.831690603168681e-13,
+    "fy_max_abs_diff": 3.410605131648481e-12,
+    "formula_errors": 0,
+    "checks_tab": "ALL CHECKS PASS",
+    "result": "PASS"
+  },
+  {
+    "scenario": "Upside",
+    "revenue": 1259.6,
+    "operating_profit": 531.7,
+    "op_margin": 0.4221,
+    "net_income": 467.9,
+    "fcf": 427.9,
+    "monthly_values_compared": 72,
+    "max_abs_diff": 4.831690603168681e-13,
+    "fy_max_abs_diff": 4.547473508864641e-13,
+    "formula_errors": 0,
+    "checks_tab": "ALL CHECKS PASS",
+    "result": "PASS"
+  }
+]

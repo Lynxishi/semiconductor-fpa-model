@@ -1,0 +1,7 @@
+{
+  "name": "semiconductor-fpa-model",
+  "private": true,
+  "description": "Builds the executive presentation from the validated model export",
+  "scripts": { "deck": "node scripts/build_presentation.js" },
+  "dependencies": { "pptxgenjs": "^4.0.1" }
+}

@@ -1,0 +1,89 @@
+check,expected,actual,difference,status
+FY2022 gross profit = net sales - cost of sales,4449.6,4449.6,0.0,PASS
+FY2022 operating expenses = R&D + SG&A + other operating items,2600.0,2600.0,0.0,PASS
+FY2022 operating income = gross profit - opex,1849.6,1849.6,-0.0,PASS
+FY2022 pre-tax income = operating income + non-operating items,1482.5,1482.5,0.0,PASS
+FY2022 net income = pre-tax - tax,1285.5,1285.5,0.0,PASS
+FY2022 CF ending cash = BS cash,317.4,317.4,0.0,PASS
+FY2022 CF net income = IS net income,1285.5,1285.5,0.0,PASS
+FY2022 total current liabilities = AP + accrued + current debt + other,1399.0,1399.0,0.0,PASS
+FY2022 total current assets = cash + ST investments + AR + inventory + other,2452.6,2452.6,0.0,PASS
+FY2023 gross profit = net sales - cost of sales,5697.9,5697.9,-0.0,PASS
+FY2023 operating expenses = R&D + SG&A + other operating items,2581.9,2581.9,0.0,PASS
+FY2023 operating income = gross profit - opex,3116.0,3116.0,0.0,PASS
+FY2023 pre-tax income = operating income + non-operating items,2909.7,2909.7,0.0,PASS
+FY2023 net income = pre-tax - tax,2237.7,2237.7,0.0,PASS
+FY2023 CF ending cash = BS cash,234.0,234.0,0.0,PASS
+FY2023 CF net income = IS net income,2237.7,2237.7,0.0,PASS
+FY2023 total current liabilities = AP + accrued + current debt + other,3118.6,3118.6,-0.0,PASS
+FY2023 total current assets = cash + ST investments + AR + inventory + other,3069.3,3069.3,0.0,PASS
+FY2024 gross profit = net sales - cost of sales,4995.7,4995.7,0.0,PASS
+FY2024 operating expenses = R&D + SG&A + other operating items,2424.7,2424.7,-0.0,PASS
+FY2024 operating income = gross profit - opex,2571.0,2571.0,0.0,PASS
+FY2024 pre-tax income = operating income + non-operating items,2365.9,2365.9,0.0,PASS
+FY2024 net income = pre-tax - tax,1906.9,1906.9,0.0,PASS
+FY2024 CF ending cash = BS cash,319.7,319.7,0.0,PASS
+FY2024 CF net income = IS net income,1906.9,1906.9,0.0,PASS
+FY2024 total current liabilities = AP + accrued + current debt + other,2519.4,2519.4,0.0,PASS
+FY2024 total current assets = cash + ST investments + AR + inventory + other,3013.0,3013.0,0.0,PASS
+FY2025 gross profit = net sales - cost of sales,2467.9,2467.9,-0.0,PASS
+FY2025 operating expenses = R&D + SG&A + other operating items,2171.6,2171.6,0.0,PASS
+FY2025 operating income = gross profit - opex,296.3,296.3,-0.0,PASS
+FY2025 pre-tax income = operating income + non-operating items,38.9,38.9,-0.0,PASS
+FY2025 net income = pre-tax - tax,-0.5,-0.5,0.0,PASS
+FY2025 CF ending cash = BS cash,771.7,771.7,0.0,PASS
+FY2025 CF net income = IS net income,-0.5,-0.5,0.0,PASS
+FY2025 total current liabilities = AP + accrued + current debt + other,1155.1,1155.1,0.0,PASS
+FY2025 total current assets = cash + ST investments + AR + inventory + other,2991.3,2991.3,0.0,PASS
+FY2026 gross profit = net sales - cost of sales,2721.1,2721.1,-0.0,PASS
+FY2026 operating expenses = R&D + SG&A + other operating items,2231.0,2231.0,0.0,PASS
+FY2026 operating income = gross profit - opex,490.1,490.1,0.0,PASS
+FY2026 pre-tax income = operating income + non-operating items,273.5,273.5,0.0,PASS
+FY2026 net income = pre-tax - tax,230.0,230.0,0.0,PASS
+FY2026 CF ending cash = BS cash,240.3,240.3,0.0,PASS
+FY2026 CF net income = IS net income,230.0,230.0,0.0,PASS
+FY2026 total current liabilities = AP + accrued + current debt + other,1136.3,1136.3,0.0,PASS
+FY2026 total current assets = cash + ST investments + AR + inventory + other,2377.6,2377.6,0.0,PASS
+FY2022 product lines sum to net sales,6820.9,6820.9,0.0,PASS
+FY2023 product lines sum to net sales,8438.7,8438.7,0.0,PASS
+FY2024 product lines sum to net sales,7634.4,7634.4,0.0,PASS
+FY2025 product lines sum to net sales,4401.6,4401.6,-0.0,PASS
+FY2026 product lines sum to net sales,4713.1,4713.1,0.0,PASS
+Q1 FY2026 product lines sum to net sales,1075.5,1075.5,0.0,PASS
+Q1 FY2027 product lines sum to net sales,1484.7,1484.7,0.0,PASS
+FY2024 reportable segments sum to net sales,7634.4,7634.4,0.0,PASS
+FY2024 semis GP + licensing sales = total gross profit,4995.7,4995.7,0.0,PASS
+FY2025 reportable segments sum to net sales,4401.6,4401.6,0.0,PASS
+FY2025 semis GP + licensing sales = total gross profit,2467.9,2467.9,0.0,PASS
+FY2025 inventory components sum to total,1293.5,1293.5,0.0,PASS
+FY2026 reportable segments sum to net sales,4713.1,4713.1,0.0,PASS
+FY2026 semis GP + licensing sales = total gross profit,2721.1,2721.1,0.0,PASS
+FY2026 inventory components sum to total,1035.4,1035.4,0.0,PASS
+FY2024 net_sales: stored value vs FY2024 10-K (S-002),7634.4,7634.4,0.0,PASS
+FY2024 cost_of_sales: stored value vs FY2024 10-K (S-002),2638.7,2638.7,0.0,PASS
+FY2024 gross_profit: stored value vs FY2024 10-K (S-002),4995.7,4995.7,0.0,PASS
+FY2024 rd: stored value vs FY2024 10-K (S-002),1097.4,1097.4,0.0,PASS
+FY2024 sga: stored value vs FY2024 10-K (S-002),734.2,734.2,0.0,PASS
+FY2024 operating_income: stored value vs FY2024 10-K (S-002),2571.0,2571.0,0.0,PASS
+FY2024 net_income: stored value vs FY2024 10-K (S-002),1906.9,1906.9,0.0,PASS
+FY2024 segment:mixed_signal_microcontrollers: stored value vs FY2024 10-K (S-002),4272.4,4272.4,0.0,PASS
+FY2024 segment:analog: stored value vs FY2024 10-K (S-002),2016.4,2016.4,0.0,PASS
+FY2024 segment:other: stored value vs FY2024 10-K (S-002),1345.6,1345.6,0.0,PASS
+FY2023 bs:cash: stored value vs FY2023 10-K (S-003),234.0,234.0,0.0,PASS
+FY2023 bs:receivables: stored value vs FY2023 10-K (S-003),1305.3,1305.3,0.0,PASS
+FY2023 bs:inventories: stored value vs FY2023 10-K (S-003),1324.9,1324.9,0.0,PASS
+FY2023 bs:payables: stored value vs FY2023 10-K (S-003),396.9,396.9,0.0,PASS
+FY2023 bs:accrued: stored value vs FY2023 10-K (S-003),1323.5,1323.5,0.0,PASS
+FY2023 bs:total_assets: stored value vs FY2023 10-K (S-003),16370.3,16370.3,0.0,PASS
+FY2024 cf:capex: stored value vs FY2024 10-K (S-002),-285.1,-285.1,0.0,PASS
+FY2023 inventory change: BS delta vs CF line (INFO),470.5,483.2,12.7,PASS
+FY2024 inventory change: BS delta vs CF line (INFO),-8.9,-12.8,-3.9,PASS
+FY2025 inventory change: BS delta vs CF line (INFO),-22.5,-31.6,-9.1,PASS
+FY2026 inventory change: BS delta vs CF line (INFO),-258.1,-264.3,-6.2,PASS
+"No duplicated (period, line_id) records",0,0,0,PASS
+No missing core income-statement values FY2022-FY2026,0,0,0,PASS
+Every value has a source URL and accession number,0,0,0,PASS
+Every value in this file classified as Reported public data,0,0,0,PASS
+All periods are valid fiscal labels,0,0,0,PASS
+"Unit sanity: no value >= 1,000,000 (USD m)",0,0,0,PASS
+Every record has a line_id,0,0,0,PASS

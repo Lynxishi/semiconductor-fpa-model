@@ -1,0 +1,530 @@
+[
+  {
+    "check": "Downside: scenario label in export",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: Checks tab status",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: formula errors after recalculation",
+    "expected": 0,
+    "actual": 0,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: JSON revenue control total = PnL tab",
+    "expected": 1001.50631123964,
+    "actual": 1001.50631123964,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: JSON operating-profit control total = PnL tab",
+    "expected": 314.452901618904,
+    "actual": 314.452901618904,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: JSON FCF control total = FCF tab",
+    "expected": 311.86494589642,
+    "actual": 311.86494589642,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: sum of 12 monthly revenue records = FY revenue",
+    "expected": 1001.50631123964,
+    "actual": 1001.5063112396418,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: sum of monthly operating profit = FY",
+    "expected": 314.452901618904,
+    "actual": 314.4529016189042,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: sum of monthly FCF = FY",
+    "expected": 311.86494589642,
+    "actual": 311.8649458964199,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: 12 monthly records, unique months",
+    "expected": 12,
+    "actual": 12,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: 36 product-month records, unique keys",
+    "expected": 36,
+    "actual": 36,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: product-month revenue sums to FY revenue",
+    "expected": 1001.50631123964,
+    "actual": 1001.5063112396414,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: product FY revenue sums to FY revenue",
+    "expected": 1001.50631123964,
+    "actual": 1001.506311239641,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: actual months = first five months only",
+    "expected": 5,
+    "actual": 5,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: YTD actual revenue from monthly records = control total",
+    "expected": 478.459228687156,
+    "actual": 478.4592286871569,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: budget FY from monthly records = control total",
+    "expected": 1145.51173441897,
+    "actual": 1145.5117344189673,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: months consecutive Jan-2026..Dec-2026",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: yields and utilization within 0-100%",
+    "expected": 0,
+    "actual": 0,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: 'variance_pnl' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: 'revenue_variance' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: 'op_bridge' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: 'variance_required' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: 'variance_kpis' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: 'capex_summary' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: 'capex_cashflows' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: 'capex_inputs' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: 'history' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Downside: 'scenario_drivers' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: scenario label in export",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: Checks tab status",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: formula errors after recalculation",
+    "expected": 0,
+    "actual": 0,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: JSON revenue control total = PnL tab",
+    "expected": 1145.51173441897,
+    "actual": 1145.51173441897,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: JSON operating-profit control total = PnL tab",
+    "expected": 434.944787154569,
+    "actual": 434.944787154569,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: JSON FCF control total = FCF tab",
+    "expected": 379.284921858853,
+    "actual": 379.284921858853,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: sum of 12 monthly revenue records = FY revenue",
+    "expected": 1145.51173441897,
+    "actual": 1145.5117344189673,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: sum of monthly operating profit = FY",
+    "expected": 434.944787154569,
+    "actual": 434.9447871545692,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: sum of monthly FCF = FY",
+    "expected": 379.284921858853,
+    "actual": 379.2849218588534,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: 12 monthly records, unique months",
+    "expected": 12,
+    "actual": 12,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: 36 product-month records, unique keys",
+    "expected": 36,
+    "actual": 36,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: product-month revenue sums to FY revenue",
+    "expected": 1145.51173441897,
+    "actual": 1145.5117344189666,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: product FY revenue sums to FY revenue",
+    "expected": 1145.51173441897,
+    "actual": 1145.5117344189669,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: actual months = first five months only",
+    "expected": 5,
+    "actual": 5,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: YTD actual revenue from monthly records = control total",
+    "expected": 478.459228687156,
+    "actual": 478.4592286871569,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: budget FY from monthly records = control total",
+    "expected": 1145.51173441897,
+    "actual": 1145.5117344189673,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: months consecutive Jan-2026..Dec-2026",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: yields and utilization within 0-100%",
+    "expected": 0,
+    "actual": 0,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: 'variance_pnl' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: 'revenue_variance' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: 'op_bridge' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: 'variance_required' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: 'variance_kpis' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: 'capex_summary' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: 'capex_cashflows' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: 'capex_inputs' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: 'history' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Base: 'scenario_drivers' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: scenario label in export",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: Checks tab status",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: formula errors after recalculation",
+    "expected": 0,
+    "actual": 0,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: JSON revenue control total = PnL tab",
+    "expected": 1259.55338561935,
+    "actual": 1259.55338561935,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: JSON operating-profit control total = PnL tab",
+    "expected": 531.661105446625,
+    "actual": 531.661105446625,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: JSON FCF control total = FCF tab",
+    "expected": 427.910472406935,
+    "actual": 427.910472406935,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: sum of 12 monthly revenue records = FY revenue",
+    "expected": 1259.55338561935,
+    "actual": 1259.5533856193501,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: sum of monthly operating profit = FY",
+    "expected": 531.661105446625,
+    "actual": 531.6611054466251,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: sum of monthly FCF = FY",
+    "expected": 427.910472406935,
+    "actual": 427.9104724069347,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: 12 monthly records, unique months",
+    "expected": 12,
+    "actual": 12,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: 36 product-month records, unique keys",
+    "expected": 36,
+    "actual": 36,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: product-month revenue sums to FY revenue",
+    "expected": 1259.55338561935,
+    "actual": 1259.5533856193501,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: product FY revenue sums to FY revenue",
+    "expected": 1259.55338561935,
+    "actual": 1259.5533856193501,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: actual months = first five months only",
+    "expected": 5,
+    "actual": 5,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: YTD actual revenue from monthly records = control total",
+    "expected": 478.459228687156,
+    "actual": 478.4592286871569,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: budget FY from monthly records = control total",
+    "expected": 1145.51173441897,
+    "actual": 1145.5117344189673,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: months consecutive Jan-2026..Dec-2026",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: yields and utilization within 0-100%",
+    "expected": 0,
+    "actual": 0,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: 'variance_pnl' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: 'revenue_variance' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: 'op_bridge' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: 'variance_required' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: 'variance_kpis' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: 'capex_summary' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: 'capex_cashflows' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: 'capex_inputs' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: 'history' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Upside: 'scenario_drivers' identical to Base run (scenario-independent)",
+    "expected": 1,
+    "actual": 1,
+    "status": "PASS"
+  },
+  {
+    "check": "Bridge: start + deltas = end",
+    "expected": 180.60373331857,
+    "actual": 180.60373331857025,
+    "status": "PASS"
+  },
+  {
+    "check": "Bridge end = YTD actual operating profit control total",
+    "expected": 180.60373331857,
+    "actual": 180.60373331857,
+    "status": "PASS"
+  },
+  {
+    "check": "Capex Base NPV = control total",
+    "expected": 60.4404177101178,
+    "actual": 60.4404177101178,
+    "status": "PASS"
+  },
+  {
+    "check": "Capex Base NPV rebuilt from exported cash flows",
+    "expected": 60.4404177101178,
+    "actual": 60.44041771011778,
+    "status": "PASS"
+  }
+]

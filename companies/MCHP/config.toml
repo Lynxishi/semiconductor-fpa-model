@@ -1,0 +1,231 @@
+# ============================================================================================
+# Company configuration: Microchip Technology (MCHP)
+# Everything company-specific lives here. The engine (scripts/, tests/, dashboard/template.html)
+# is generic. Build + test + export for this company:  python scripts/run_all_validations.py --company MCHP
+# ============================================================================================
+
+[company]
+ticker = "MCHP"
+name = "Microchip Technology"                 # used in the disclaimer: "...nonpublic <name> information."
+legal_name = "Microchip Technology Inc."
+exchange = "NASDAQ"
+cik = "0000827054"
+fiscal_year_end = "March 31"
+history_years = ["FY2022", "FY2023", "FY2024", "FY2025", "FY2026"]
+base_year = "FY2026"                           # the division's base year (last reported year)
+reported_csv = "reported_financials.csv"       # in this folder; standard long format with line_id
+filings_summary = "Forms 10-K FY2023, FY2024, FY2026 and 10-Q Q1 FY2027 (SEC EDGAR)"
+
+[company.quarter]                              # optional: latest reported quarter vs prior-year quarter
+prior = "Q1 FY2026"
+latest = "Q1 FY2027"
+label = "first fiscal quarter (April-June)"
+
+[company.checks]
+# optional reported-segment totals that must sum to net sales (line_ids)
+segments_sum_to_sales = ["segment_info:semis_sales", "segment_info:licensing_sales"]
+# optional extra identities: total = sum(parts), checked in every period where all values exist
+[[company.checks.identity]]
+name = "semis GP + licensing sales = total gross profit"
+total = "gross_profit"
+parts = ["segment_info:semis_gross_profit", "segment_info:licensing_sales"]
+
+[forecast]
+year = "FY2027"
+start = "2026-04-01"                           # first month of the forecast year
+actual_months = 5                              # Apr-Aug are simulated actuals
+actuals_label = "Apr-Aug 2026"
+as_of = "September 2026"
+
+[division]
+name = "Embedded Control Division"
+short = "ECD"
+base_revenue = 1000.0                          # $m, FY base year (user-provided assumption A-007)
+rd0 = 200.0                                    # $m base-year R&D (simulated)
+sga0 = 100.0                                   # $m base-year SG&A (simulated)
+rd_note = "20% of revenue. Microchip company-wide 23.0% includes corporate R&D."
+sga_note = "10% of revenue. Microchip company-wide 14.3% includes corporate overhead."
+capacity_definition = "Internal final-test capacity"
+
+# --- three product lines (exactly three). segment = reported line_id used for the base-year mix ---
+[[products]]
+key = "mcu"
+abbr = "MCU"                                  # column-header label
+tag = "MCU"                                    # compact label on the dashboard
+id = "MCU"
+name = "Mixed-signal microcontrollers"
+short = "Mixed-signal MCUs"
+segment = "segment:mixed_signal_microcontrollers"
+asp0 = 2.00
+yld0 = 0.92
+vc0 = 0.31
+fix0 = 9.5
+cap0 = 35.0
+gdiff = 0.0
+inv_m = 1.0
+a_dem = 0.04
+a_asp = -0.02
+a_yld = 0.925
+a_util = 0.82
+a_vc = 0.045
+a_fix = 9.6
+
+[[products]]
+key = "ana"
+abbr = "Analog & power"                                  # column-header label
+tag = "Analog"                                    # compact label on the dashboard
+id = "ANALOG"
+name = "Analog & power management"
+short = "Analog & power"
+segment = "segment:analog"
+asp0 = 0.80
+yld0 = 0.94
+vc0 = 0.15
+fix0 = 5.2
+cap0 = 46.0
+gdiff = -0.05
+inv_m = 1.0
+a_dem = -0.06
+a_asp = -0.005
+a_yld = 0.935
+a_util = 0.76
+a_vc = 0.04
+a_fix = 5.1
+
+[[products]]
+key = "fpga"
+abbr = "FPGA"                                  # column-header label
+tag = "FPGA"                                    # compact label on the dashboard
+id = "FPGA"
+name = "FPGAs"
+short = "FPGAs"
+segment = "segment:other"
+segment_note = "FPGA uses Microchip's whole 'Other' line as a stand-in (FPGAs are not reported separately)."
+asp0 = 25.00
+yld0 = 0.85
+vc0 = 4.70
+fix0 = 4.4
+cap0 = 1.30
+gdiff = 0.05
+inv_m = 1.0
+a_dem = 0.12
+a_asp = 0.02
+a_yld = 0.82
+a_util = 0.88
+a_vc = 0.06
+a_fix = 4.6
+
+[product_notes]
+asp0 = "Simulated. Order of magnitude typical for each product type."
+yld0 = "Simulated. Good units / units tested. Larger FPGA die -> lower yield."
+vc0 = "Simulated. Wafer, foundry, substrate, package, test consumables per unit started."
+fix0 = "Simulated. Factory overhead, depreciation, fab/test labor. Same in base year and FY2027."
+cap0 = "Simulated. Capacity = units the internal test floor can process per month (A-016)."
+gdiff = "Simulated. Keeps mix moving: Microchip Q1 FY2027 growth was Analog +30%, MCU +39%, Other +48%."
+inv_m = "Simulated opening balance at 1-Apr-2026."
+
+# --- the nine scenario drivers: [Downside, Base, Upside] + rationale ---
+[drivers.dem_g]
+values = [0.05, 0.20, 0.30]
+why = "Microchip Q1 FY2027 sales +38% YoY and Q1 run-rate +26% vs FY2026 (section B). Base takes a more cautious +20%."
+[drivers.asp_chg]
+values = [-0.04, -0.01, 0.01]
+why = "Mature semiconductor prices usually drift down slowly; downside = price competition as inventory clears."
+[drivers.yld_adj]
+values = [-0.02, 0.0, 0.01]
+why = "Applied to each product's base-year final-test yield (section D)."
+[drivers.util]
+values = [0.70, 0.80, 0.88]
+why = "FY2026 implied ~65% (downturn). Microchip expects 'higher internal factory utilization' (S-005)."
+[drivers.mat_inf]
+values = [0.06, 0.03, 0.01]
+why = "Wafer, substrate and packaging cost inflation."
+[drivers.rd_g]
+values = [0.02, 0.05, 0.08]
+why = "Microchip R&D grew +10.4% in FY2026 (section B). Downside = hiring freeze."
+[drivers.sga_g]
+values = [0.01, 0.04, 0.06]
+why = "Microchip SG&A grew +9.2% in FY2026 (section B)."
+[drivers.capex_pct]
+values = [0.02, 0.03, 0.04]
+why = "Microchip capex 1.9% of sales FY2026, 3.7-5.8% FY2022-FY2024 (section B)."
+[drivers.tax]
+values = [0.21, 0.18, 0.16]
+why = "Microchip effective rate 13-23% in FY2022-FY2026 excl. FY2025 (section B). Downside = US statutory 21%."
+
+[seasonality]
+factors = [0.96, 0.98, 1.02, 0.97, 0.99, 1.04, 1.03, 1.01, 0.95, 0.97, 1.00, 1.08]
+note = "Quarter-end pulls (Jun, Sep, Mar) and a December holiday dip"
+
+[pnl]
+dso = 60
+dpo = 40
+dep_share = 0.30
+life_months = 60
+dso_note = "Microchip DSO 55-57 days FY2022-FY2025, 69 in FY2026 (reference below). AR = monthly revenue x 12 x DSO / 365"
+
+[actuals]
+noise = [0.99, 1.02, 1.00, 0.98, 1.01]
+a_rd = 18.0
+a_sga = 8.4
+a_capex = 0.026
+notes = { a_dem = "Design wins in MCUs and FPGAs; analog channel still digesting inventory", a_asp = "Budget assumed -1.0% for every product", a_yld = "FPGA yield problem on the older test platform (budget 85%)", a_util = "Analog loading cut to limit inventory; FPGA run hard to meet demand (budget 80%)", a_vc = "Substrate and foundry wafer price increases (budget +3.0%)", a_fix = "FPGA overtime and maintenance on the older testers", a_rd = "Budget $17.5m: accelerated hiring for next-gen MCU", a_sga = "Budget $8.67m: travel and marketing held back", a_capex = "Budget 3.0%: some projects deferred" }
+
+[capex]
+target = "fpga"                                # product key the project adds capacity to
+project = "FPGA automated final-test platform"
+project_title = "FPGA Automated Final-Test Platform"
+target_label = "FPGA"
+project_short = "FPGA test platform"             # used in the deck
+project_noun = "Test platform"
+yield_tile_note = "older test platform"
+price = 24.0
+install = 3.0
+add_cap = 0.30
+yld_gain = 0.03
+savings = 1.5
+maint = 1.2
+life = 6
+salvage = 0.0
+umax = 0.90
+erosion = 0.02
+rate = 0.09
+hurdle = 0.11
+max_pb = 4.0
+growth_after = [0.02, 0.06, 0.10]              # target-product demand growth per year after the forecast year
+growth_note = "Downside: FPGA demand stalls; Upside: AI / aerospace design wins"
+price_note = "Automated test handlers + testers for large-die FPGAs"
+savings_note = "Retire overtime and repairs on the older testers"
+rate_note = "Assumed. Microchip does not report a WACC; semiconductor WACCs are commonly 8-11%"
+
+# --- optional presentation of reported rows in Hist_Data (keyed by line_id) ---
+[history.labels]
+"segment:other" = "Other (incl. FPGA, licensing, memory, timing)"
+"cf:capex" = "Capital expenditures (printed negative)"
+"total_opex" = "Operating expenses (total)"
+
+[history.notes]
+"segment:other" = "Per 10-K Item 1: FPGA, licensing royalties & IP sales, engineering services, memory, timing systems, manufacturing services, legacy ASICs, aerospace. FPGA not reported separately."
+"segment_info:semis_sales" = "Segment table first disclosed in this form in S-001 (covers FY2024-FY2026 only)."
+"segment_info:licensing_sales" = "Technology licensing has no cost of sales in the segment table."
+"cf:capex" = "Printed as a cash outflow (negative). Analysis converts to positive spend."
+"cf:dividends" = "FY2022-FY2023 printed as 'Payment of cash dividends' (no preferred stock outstanding then)."
+"bs:current_debt" = "FY2025-FY2026: no current-debt line presented on the balance sheet (blank, treated as 0 in checks)."
+"bs:st_investments" = "Printed only in the FY2023 10-K (FY2022 2.0, FY2023 0.0); blank = not presented, treated as 0."
+"other_opex:special" = "Printed '(income) charges' in FY2024 10-K; negative = income."
+"bs:inventories" = "Microchip's own reported inventory days use quarterly COGS, so they differ from the annual DIO in Hist_Analysis."
+
+[history.source_ids]                           # short source labels shown in Hist_Data, keyed by accession no.
+"0000827054-26-000016" = "S-001 10-K FY2026"
+"0000827054-24-000098" = "S-002 10-K FY2024"
+"0000827054-23-000080" = "S-003 10-K FY2023"
+"0000827054-26-000038" = "S-004 10-Q Q1 FY2027"
+
+# --- optional: deck wording overrides (templates; {placeholders} are filled from the model, see docs/engine.md) ---
+# Leave a key out to use the rule-generated sentence. Numbers must come from placeholders, never be typed here.
+[narrative]
+s2_mix = "Mix toward FPGAs and MCUs more than offsets softer analog volume."
+s4_stat1_sub = "Inventory correction across the channel"
+s4_notes = "Reported public data only on this slide. Net sales fell by almost half from the {peak_year} peak as customers and distributors worked down inventory; gross margin fell with factory utilization. {q_latest} sales were up {q_growth0} year over year, which anchors the Base demand-growth assumption of {dem_base}."
+s6_notes = "Budget YTD operating profit {op_budget}, actual {op_actual}. Mix is the largest favorable driver: higher-priced FPGAs and MCUs replaced low-priced analog units, so total units fell (negative volume) while revenue rose. Material inflation, the FPGA yield shortfall and R&D hiring were unfavorable. Every component is computed separately and reconciles to the total with zero difference."
+s9_notes = "Break-even needs only about {be_util} use of the added capacity because FPGAs carry a high contribution margin, so the real risk is whether demand ever exceeds today's capacity. In Downside ({tl} demand {dn_growth} a year) it never does, and yield, scrap and savings alone cannot repay {capex}."

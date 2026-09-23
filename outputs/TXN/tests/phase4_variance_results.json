@@ -1,0 +1,38 @@
+[
+  {
+    "selector": "Base",
+    "price": 1.328,
+    "vol": 14.767,
+    "mix": -6.341,
+    "rev_total": 9.754,
+    "mat": -1.255,
+    "yld": -0.841,
+    "opex": -0.583,
+    "op_var": 3.762,
+    "op_b": 176.842,
+    "op_a": 180.604,
+    "bridge_end": 180.604,
+    "max_abs_diff_vs_python": 1.4210854715202004e-13,
+    "formula_errors": 0,
+    "checks_tab": "ALL CHECKS PASS",
+    "result": "PASS"
+  },
+  {
+    "selector": "Downside",
+    "price": 1.328,
+    "vol": 14.767,
+    "mix": -6.341,
+    "rev_total": 9.754,
+    "mat": -1.255,
+    "yld": -0.841,
+    "opex": -0.583,
+    "op_var": 3.762,
+    "op_b": 176.842,
+    "op_a": 180.604,
+    "bridge_end": 180.604,
+    "max_abs_diff_vs_python": 1.4210854715202004e-13,
+    "formula_errors": 0,
+    "checks_tab": "ALL CHECKS PASS",
+    "result": "PASS"
+  }
+]

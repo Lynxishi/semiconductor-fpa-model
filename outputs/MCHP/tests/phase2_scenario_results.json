@@ -1,0 +1,35 @@
+[
+  {
+    "scenario": "Downside",
+    "excel_revenue": 1004.942,
+    "python_revenue": 1004.942,
+    "excel_gm": 0.5576,
+    "cells_compared": 180,
+    "max_abs_diff": 5.1514348342607263e-14,
+    "formula_errors": 0,
+    "checks_tab": "ALL CHECKS PASS",
+    "result": "PASS"
+  },
+  {
+    "scenario": "Base",
+    "excel_revenue": 1184.846,
+    "python_revenue": 1184.846,
+    "excel_gm": 0.6104,
+    "cells_compared": 180,
+    "max_abs_diff": 4.973799150320701e-14,
+    "formula_errors": 0,
+    "checks_tab": "ALL CHECKS PASS",
+    "result": "PASS"
+  },
+  {
+    "scenario": "Upside",
+    "excel_revenue": 1309.782,
+    "python_revenue": 1309.782,
+    "excel_gm": 0.6414,
+    "cells_compared": 180,
+    "max_abs_diff": 5.1514348342607263e-14,
+    "formula_errors": 0,
+    "checks_tab": "ALL CHECKS PASS",
+    "result": "PASS"
+  }
+]
